@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-        System.out.println("생일 입력하세요 >>");
+        System.out.print("생일 입력하세요 >>");
         Scanner scanner = new Scanner(System.in);
         int date = scanner.nextInt();
         int year = date / 10000;
