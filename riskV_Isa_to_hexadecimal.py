@@ -97,7 +97,7 @@ def parse_instruction(inst, current_pc):
     else:
         return None, ["(no breakdown available)"]
 
-# ✅ Main loop: input + output
+
 while True:
     line = input(">> Enter PC(hex) and instruction (ex: 0x14 bne a5, zero, L2):\n> ")
     if not line or line.lower() in {"exit", "quit"}:
