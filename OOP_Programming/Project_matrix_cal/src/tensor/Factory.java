@@ -42,6 +42,7 @@ public class Factory {
     //}
 
     public static Matrix createIdentityMatrix(int n) {
-        return (new MatrixImpl(n, n, new ScalarImpl("0"))).identity(n);
+        return new MatrixImpl(n, true);
     }
+
 }

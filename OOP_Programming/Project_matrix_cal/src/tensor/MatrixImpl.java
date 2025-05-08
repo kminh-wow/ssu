@@ -31,19 +31,19 @@ class MatrixImpl implements Matrix {
         }
     }
     MatrixImpl(String csvPath) throws IOException {
-    elements = new ArrayList<>();
-    BufferedReader reader = new BufferedReader(new FileReader(csvPath));
-    String line;
-    while ((line = reader.readLine()) != null) {
-        String[] tokens = line.split(",");
-        List<Scalar> row = new ArrayList<>();
-        for (String token : tokens) {
-            row.add(new ScalarImpl(token.trim()));
+        elements = new ArrayList<>();
+        BufferedReader reader = new BufferedReader(new FileReader(csvPath));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] tokens = line.split(",");
+            List<Scalar> row = new ArrayList<>();
+            for (String token : tokens) {
+                row.add(new ScalarImpl(token.trim()));
+                }
+            elements.add(row);
         }
-        elements.add(row);
+        reader.close();
     }
-    reader.close();
-}
 
     MatrixImpl(Scalar[][] arr) {
         elements = new ArrayList<>();
@@ -56,15 +56,27 @@ class MatrixImpl implements Matrix {
         }
     }
 
-    MatrixImpl identity(int n) {
+    MatrixImpl(int n, boolean isIdentity) {
+        if (n <= 0) throw new IllegalArgumentException("Invalid dimension.");
+
         Scalar one = new ScalarImpl("1");
         Scalar zero = new ScalarImpl("0");
-        MatrixImpl id = new MatrixImpl(n, n, zero);
+
+        elements = new ArrayList<>();
+
         for (int i = 0; i < n; i++) {
-            id.set(i, i, one.clone());
-        }
-        return id;
+            List<Scalar> row = new ArrayList<>();
+            for (int j = 0; j < n; j++) {
+                if (isIdentity && i == j) {
+                    row.add(one.clone());
+                }   else {
+                        row.add(zero.clone());
+             }
+            }
+        elements.add(row);
     }
+}
+
 
     public int getRowCount() {
         return elements.size();
