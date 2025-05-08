@@ -9,4 +9,11 @@ public interface Matrix extends Cloneable {
     Matrix clone();
     void add(Matrix other);
     void multiply(Matrix other);
+    boolean isIdentityMatrix();
+    void swapColumns(int col1, int col2);
+    void scaleColumn(int colIndex, Scalar scalar);
+    void addScaledRow(int targetRow, int sourceRow, Scalar scalar);
+    void addScaledColumn(int targetCol, int sourceCol, Scalar scalar);
+    Matrix subMatrix(int rowStart, int rowEnd, int colStart, int colEnd);
+
 }

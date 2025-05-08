@@ -42,23 +42,6 @@ class MatrixImpl implements Matrix {
         }
     }
 
-    MatrixImpl(String csvPath) {
-        elements = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(csvPath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] tokens = line.split(",");
-                List<Scalar> row = new ArrayList<>();
-                for (String token : tokens) {
-                    row.add(new ScalarImpl(token.trim()));
-                }
-                elements.add(row);
-            }
-        } catch (IOException e) {
-            throw new MatrixFileException("Error reading matrix from file.");
-        }
-    }
-
     MatrixImpl identity(int n) {
         Scalar one = new ScalarImpl("1");
         Scalar zero = new ScalarImpl("0");
@@ -427,6 +410,73 @@ class MatrixImpl implements Matrix {
         }
 
         return identity;
+    }
+    public boolean isIdentityMatrix() {
+        if (getRowCount() != getColumnCount()) return false;
+        for (int i = 0; i < getRowCount(); i++) {
+            for (int j = 0; j < getColumnCount(); j++) {
+                BigDecimal val = get(i, j).getValue();
+                if (i == j && val.compareTo(BigDecimal.ONE) != 0) return false;
+                if (i != j && val.compareTo(BigDecimal.ZERO) != 0) return false;
+            }
+        }
+        return true;
+    }
+
+    public void swapColumns(int col1, int col2) {
+        if (col1 < 0 || col2 < 0 || col1 >= getColumnCount() || col2 >= getColumnCount())
+            throw new IndexOutOfBoundsException("Column index out of bounds.");
+        for (List<Scalar> row : elements) {
+            Collections.swap(row, col1, col2);
+        }
+    }
+
+    public void scaleColumn(int colIndex, Scalar scalar) {
+        if (colIndex < 0 || colIndex >= getColumnCount())
+            throw new IndexOutOfBoundsException("Column index out of bounds.");
+        for (int i = 0; i < getRowCount(); i++) {
+            Scalar temp = get(i, colIndex).clone();
+            temp.multiply(scalar);
+            set(i, colIndex, temp);
+        }
+    }
+
+    public void addScaledRow(int targetRow, int sourceRow, Scalar scalar) {
+        if (targetRow < 0 || sourceRow < 0 || targetRow >= getRowCount() || sourceRow >= getRowCount())
+            throw new IndexOutOfBoundsException("Row index out of bounds.");
+        for (int j = 0; j < getColumnCount(); j++) {
+            Scalar temp = get(sourceRow, j).clone();
+            temp.multiply(scalar);
+            Scalar newVal = get(targetRow, j).clone();
+            newVal.add(temp);
+            set(targetRow, j, newVal);
+        }
+    }
+
+    public void addScaledColumn(int targetCol, int sourceCol, Scalar scalar) {
+        if (targetCol < 0 || sourceCol < 0 || targetCol >= getColumnCount() || sourceCol >= getColumnCount())
+            throw new IndexOutOfBoundsException("Column index out of bounds.");
+        for (int i = 0; i < getRowCount(); i++) {
+            Scalar temp = get(i, sourceCol).clone();
+            temp.multiply(scalar);
+            Scalar newVal = get(i, targetCol).clone();
+            newVal.add(temp);
+            set(i, targetCol, newVal);
+        }
+    }
+
+    public Matrix subMatrix(int rowStart, int rowEnd, int colStart, int colEnd) {
+        if (rowStart < 0 || rowEnd >= getRowCount() || colStart < 0 || colEnd >= getColumnCount()
+                || rowStart > rowEnd || colStart > colEnd)
+            throw new IndexOutOfBoundsException("Invalid submatrix range.");
+
+        Scalar[][] sub = new Scalar[rowEnd - rowStart + 1][colEnd - colStart + 1];
+        for (int i = rowStart; i <= rowEnd; i++) {
+            for (int j = colStart; j <= colEnd; j++) {
+                sub[i - rowStart][j - colStart] = get(i, j).clone();
+            }
+        }
+        return new MatrixImpl(sub);
     }
 
 

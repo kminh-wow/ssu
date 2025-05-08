@@ -37,9 +37,9 @@ public class Factory {
         return new MatrixImpl(arr);
     }
 
-    public static Matrix createMatrix(String csvPath) {
-        return new MatrixImpl(csvPath);
-    }
+    //public static Matrix createMatrix(String csvPath) {
+      //  return new MatrixImpl(csvPath);
+    //}
 
     public static Matrix createIdentityMatrix(int n) {
         return (new MatrixImpl(n, n, new ScalarImpl("0"))).identity(n);

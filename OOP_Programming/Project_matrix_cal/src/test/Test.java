@@ -80,7 +80,36 @@ public class Test {
         System.out.println("Inverse of m:\n" + inv);
         Matrix prod = Tensors.multiply(m, inv);
         System.out.println("m * inv(m):\n" + prod);
+        System.out.println("===== 추가 메서드 테스트 =====");
+// 3x3 단위행렬 생성
+        //Matrix identity = Factory.createIdentityMatrix(3);
+        System.out.println("Identity Matrix:\n" + identity);
+        System.out.println("isIdentityMatrix? " + identity.isIdentityMatrix());
+
+// 열 교환 테스트
+        //Matrix m1 = Factory.createMatrix(3, 3, Factory.createScalar("1"));
+        m1.set(0, 1, Factory.createScalar("2"));  // 인터페이스에서 제공
+        System.out.println("\nBefore swapColumns(0,1):\n" + m1);
+        m1.swapColumns(0, 1);
+        System.out.println("After swapColumns(0,1):\n" + m1);
+
+// 열 스칼라배 테스트
+        m1.scaleColumn(1, Factory.createScalar("2"));
+        System.out.println("After scaleColumn(1, 2):\n" + m1);
+
+// 행 덧셈 테스트: row0 += row1 * 2
+        m1.addScaledRow(0, 1, Factory.createScalar("2"));
+        System.out.println("After addScaledRow(0, 1, 2):\n" + m1);
+
+// 열 덧셈 테스트: col2 += col0 * 3
+        m1.addScaledColumn(2, 0, Factory.createScalar("3"));
+        System.out.println("After addScaledColumn(2, 0, 3):\n" + m1);
+
+// 부분 행렬 추출 테스트
+        Matrix sub = m1.subMatrix(0, 1, 1, 2);
+        System.out.println("SubMatrix from (0~1, 1~2):\n" + sub);
 
         System.out.println("\n===== DONE =====");
+
     }
 }
