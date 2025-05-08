@@ -56,7 +56,7 @@ class MatrixImpl implements Matrix {
         }
     }
 
-    MatrixImpl(int n, boolean isIdentity) {
+    MatrixImpl(int size) {
         if (n <= 0) throw new IllegalArgumentException("Invalid dimension.");
 
         Scalar one = new ScalarImpl("1");
@@ -67,7 +67,7 @@ class MatrixImpl implements Matrix {
         for (int i = 0; i < n; i++) {
             List<Scalar> row = new ArrayList<>();
             for (int j = 0; j < n; j++) {
-                if (isIdentity && i == j) {
+                if (i == j) {
                     row.add(one.clone());
                 }   else {
                         row.add(zero.clone());

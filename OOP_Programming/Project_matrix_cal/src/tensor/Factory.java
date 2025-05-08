@@ -42,7 +42,7 @@ public class Factory {
     //}
 
     public static Matrix createIdentityMatrix(int n) {
-        return new MatrixImpl(n, true);
+        return new MatrixImpl(n);
     }
 
 }
