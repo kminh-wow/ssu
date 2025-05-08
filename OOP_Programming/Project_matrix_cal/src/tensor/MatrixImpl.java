@@ -30,6 +30,20 @@ class MatrixImpl implements Matrix {
             elements.add(newRow);
         }
     }
+    MatrixImpl(String csvPath) throws IOException {
+    elements = new ArrayList<>();
+    BufferedReader reader = new BufferedReader(new FileReader(csvPath));
+    String line;
+    while ((line = reader.readLine()) != null) {
+        String[] tokens = line.split(",");
+        List<Scalar> row = new ArrayList<>();
+        for (String token : tokens) {
+            row.add(new ScalarImpl(token.trim()));
+        }
+        elements.add(row);
+    }
+    reader.close();
+}
 
     MatrixImpl(Scalar[][] arr) {
         elements = new ArrayList<>();
