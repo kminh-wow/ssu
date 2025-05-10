@@ -93,12 +93,94 @@ def parse_instruction(inst, current_pc):
             fmt("opcode", opcode)
         ]
         return full, breakdown
+    elif mnemonic in {"bne", "bge"}:
+        rs1_name, rs2_name, label = parts[1], parts[2], parts[3]
+        real_offset = resolve_offset(current_pc, label)
+        #print(f"[DEBUG] Real offset: {real_offset}")
+        offset = real_offset  # ✅ 단 한 번만 >> 1
+        imm = to_bin(offset, 13)
+        #print(f"[DEBUG] imm bits (13): {imm}")
+        #print(f"offset        = {offset}")
+        #print(f"offset >> 1   = {offset >> 1}")
+        #print(f"to_bin        = {to_bin(offset >> 1, 13)}")
+        imm12   = imm[0]
+        imm11   = imm[1]
+        imm10_5 = imm[2:8]
+        imm4_1  = imm[8:12]
+        rs1_bin = to_bin(reg_map[rs1_name], 5)
+        rs2_bin = to_bin(reg_map[rs2_name], 5)
+        funct3  = "001" if mnemonic == "bne" else "101"
+        opcode  = "1100011"
+        # ✅ 정확한 순서로 조립 (bit 31 → bit 0)
+        binary = (
+            imm12 +          # bit 31
+            imm10_5 +        # bits 30-25
+            rs2_bin +        # bits 24-20
+            rs1_bin +        # bits 19-15
+            funct3 +         # bits 14-12
+            imm4_1 +         # bits 11-8
+            imm11 +          # bit 7
+            opcode           # bits 6-0
+        )
+
+        breakdown = [
+            fmt("imm[12]", imm12),
+            fmt("imm[10:5]", imm10_5),
+            fmt("rs2", rs2_bin),
+            fmt("rs1", rs1_bin),
+            fmt("funct3", funct3),
+            fmt("imm[4:1]", imm4_1),
+            fmt("imm[11]", imm11),
+            fmt("opcode", opcode)
+        ]
+
+        return binary, breakdown
+
+    elif mnemonic == "jal":
+        rd, label = parts[1], parts[2]
+        offset = resolve_offset(current_pc, label)
+        offset >>= 1
+        imm_bin = to_bin(offset, 21)
+        imm20 = imm_bin[0]
+        imm10_1 = imm_bin[11:21]
+        imm11 = imm_bin[10]
+        imm19_12 = imm_bin[1:9]
+        rd_bin = to_bin(reg_map[rd], 5)
+        opcode = "1101111"
+        full = imm20 + imm19_12 + imm11 + imm10_1 + rd_bin + opcode
+        breakdown = [
+            fmt("imm[20]", imm20),
+            fmt("imm[19:12]", imm19_12),
+            fmt("imm[11]", imm11),
+            fmt("imm[10:1]", imm10_1),
+            fmt("rd", rd_bin),
+            fmt("opcode", opcode)
+        ]
+        return full, breakdown
+
+    elif mnemonic == "jalr":
+        rd, imm, rs1 = parts[1], int(parts[2]), parts[3]
+        imm_bin = to_bin(imm, 12)
+        rs1_bin = to_bin(reg_map[rs1], 5)
+        funct3 = "000"
+        rd_bin = to_bin(reg_map[rd], 5)
+        opcode = "1100111"
+        full = imm_bin + rs1_bin + funct3 + rd_bin + opcode
+        breakdown = [
+            fmt("imm[11:0]", imm_bin),
+            fmt("rs1", rs1_bin),
+            fmt("funct3", funct3),
+            fmt("rd", rd_bin),
+            fmt("opcode", opcode)
+        ]
+        return full, breakdown
 
     else:
         return None, ["(no breakdown available)"]
 
 
 while True:
+    print("debug test")
     line = input(">> Enter PC(hex) and instruction (ex: 0x14 bne a5, zero, L2):\n> ")
     if not line or line.lower() in {"exit", "quit"}:
         break
@@ -107,6 +189,9 @@ while True:
         pc = int(pc_str, 16)
         inst = " ".join(inst_parts)
         bin_code, breakdown = parse_instruction(inst, pc)
+        if bin_code is None:
+            print("Unsupported instruction.")
+            continue
         hex_code = hex(int(bin_code, 2))[2:].zfill(8)
         print(f"\nBinary   : {bin_code}")
         print(f"Hex      : {hex_code}")
