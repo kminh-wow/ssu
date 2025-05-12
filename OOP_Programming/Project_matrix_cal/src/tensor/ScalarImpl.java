@@ -17,8 +17,13 @@ class ScalarImpl implements Scalar {
         this.value = new BigDecimal(randomValue);
     }
 
-    public BigDecimal getValue() { return value; }
-    public void setValue(BigDecimal value) { this.value = value; }
+    public String get(String val){
+        return this.value.toString();
+    }
+    public void set(String val) {
+        this.value = new BigDecimal(val);  // 문자열 → BigDecimal
+    }
+
     public String toString() { return value.stripTrailingZeros().toPlainString(); }
     public boolean equals(Object obj) {
         if (!(obj instanceof Scalar)) return false;
