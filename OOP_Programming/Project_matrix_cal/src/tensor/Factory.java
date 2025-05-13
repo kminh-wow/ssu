@@ -37,12 +37,16 @@ public class Factory {
         return new MatrixImpl(arr);
     }
 
-    //public static Matrix createMatrix(String csvPath) {
-      //  return new MatrixImpl(csvPath);
-    //}
+    public static Matrix createMatrix(String csvPath) {
+        try {
+            return new MatrixImpl(csvPath);
+        } catch (java.io.IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-    public static Matrix createIdentityMatrix(int n) {
-        return new MatrixImpl(n);
+    public static Matrix creatIdentityMatrix(int n) {
+        return new MatrixImpl(n, n, Factory.createScalar("1"));
     }
 
 }
