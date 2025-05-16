@@ -96,13 +96,10 @@ def parse_instruction(inst, current_pc):
     elif mnemonic in {"bne", "bge"}:
         rs1_name, rs2_name, label = parts[1], parts[2], parts[3]
         real_offset = resolve_offset(current_pc, label)
-        #print(f"[DEBUG] Real offset: {real_offset}")
-        offset = real_offset  # ✅ 단 한 번만 >> 1
+        
+        offset = real_offset  
         imm = to_bin(offset, 13)
-        #print(f"[DEBUG] imm bits (13): {imm}")
-        #print(f"offset        = {offset}")
-        #print(f"offset >> 1   = {offset >> 1}")
-        #print(f"to_bin        = {to_bin(offset >> 1, 13)}")
+        
         imm12   = imm[0]
         imm11   = imm[1]
         imm10_5 = imm[2:8]
@@ -111,7 +108,7 @@ def parse_instruction(inst, current_pc):
         rs2_bin = to_bin(reg_map[rs2_name], 5)
         funct3  = "001" if mnemonic == "bne" else "101"
         opcode  = "1100011"
-        # ✅ 정확한 순서로 조립 (bit 31 → bit 0)
+        
         binary = (
             imm12 +          # bit 31
             imm10_5 +        # bits 30-25
