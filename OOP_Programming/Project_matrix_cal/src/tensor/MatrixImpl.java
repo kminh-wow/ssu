@@ -67,7 +67,7 @@ class MatrixImpl implements Matrix {
     }
 
     MatrixImpl Identity(int n){
-        return null;
+        return null;//수정쳐해라
     }
 
     public Scalar getValue(int row, int col) {
