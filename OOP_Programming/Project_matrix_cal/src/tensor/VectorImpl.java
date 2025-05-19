@@ -19,20 +19,21 @@ class VectorImpl implements Vector {
         for (Scalar s : arr) elements.add(s.clone());
     }
 
+    @Override
     public Scalar getValue(int index) {
         if (index < 0 || index >= elements.size()) {
             throw new IndexOutOfBoundsException("Index out of bounds: " + index);
         }
         return elements.get(index).clone();  // 읽기 - 복사해서 반환
     }
-
+    @Override
     public void setValue(int index, Scalar val) {
         if (index < 0 || index >= elements.size()) {
             throw new IndexOutOfBoundsException("Index out of bounds: " + index);
         }
         elements.set(index, val.clone());  // 쓰기 - 복사해서 저장
     }
-
+    @Override
     public int size() {
         return elements.size();
     }
@@ -106,21 +107,5 @@ class VectorImpl implements Vector {
         }
         return new MatrixImpl(arr);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

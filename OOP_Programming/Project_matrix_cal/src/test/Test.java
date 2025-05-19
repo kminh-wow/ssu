@@ -67,7 +67,7 @@ public class Test {
         // 9. 행렬 생성 (csv 파일) - 파일이 없으므로 생략 또는 주석처리
         // System.out.println("9. 행렬 생성 (csv 파일)");
         // System.out.println(Factory.createMatrix("matrix.csv"));
-
+        
         // 10. 단위행렬 생성
         Matrix mD = Factory.creatIdentityMatrix(3);
         System.out.println("10. 단위행렬 생성");
@@ -306,42 +306,48 @@ public class Test {
         System.out.println("45. 행 교환");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("교환할 행: 0행과 1행");
-        System.out.println(mA.rowSwap(0, 1));
+        mA.rowSwap(0, 1);
+        System.out.println(mA);
         System.out.println("");
 
         // 46. 열 교환
         System.out.println("46. 열 교환");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("교환할 열: 0열과 1열");
-        System.out.println(mA.colSwap(0, 1));
+        mA.colSwap(0, 1);
+        System.out.println(mA);
         System.out.println("");
 
         // 47. 행 스칼라 곱
         System.out.println("47. 행 스칼라 곱");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("곱할 행: 0행, 스칼라: 2");
-        System.out.println(mA.rowMultiply(0, Factory.createScalar("2")));
+        mA.rowMultiply(0, Factory.createScalar("2"));
+        System.out.println(mA);
         System.out.println("");
 
         // 48. 열 스칼라 곱
         System.out.println("48. 열 스칼라 곱");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("곱할 열: 0열, 스칼라: 2");
-        System.out.println(mA.colMultiply(0, Factory.createScalar("2")));
+        mA.colMultiply(0, Factory.createScalar("2"));
+        System.out.println(mA);
         System.out.println("");
 
         // 49. 행에 다른 행의 상수배 더하기
         System.out.println("49. 행에 다른 행의 상수배 더하기");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("대상 행: 0행, 더할 행: 1행, 스칼라: 2");
-        System.out.println(mA.rowAddOtherRow(0, 1, Factory.createScalar("2")));
+        mA.rowAddOtherRow(0, 1, Factory.createScalar("2"));
+        System.out.println(mA);
         System.out.println("");
 
         // 50. 열에 다른 열의 상수배 더하기
         System.out.println("50. 열에 다른 열의 상수배 더하기");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("대상 열: 0열, 더할 열: 1열, 스칼라: 2");
-        System.out.println(mA.colAddOtherCol(0, 1, Factory.createScalar("2")));
+        mA.colAddOtherCol(0, 1, Factory.createScalar("2"));
+        System.out.println(mA);
         System.out.println("");
 
         // 51. RREF 변환

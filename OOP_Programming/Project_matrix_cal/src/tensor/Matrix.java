@@ -86,14 +86,15 @@ public interface Matrix {
 
     Vector getRowVector(int row);//34
     Vector getColVector(int col);//35
-
+    public int getRowCount();
+    public int getColumnCount();
     Matrix extractSubMatrix(int rowStart, int rowEnd, int colStart, int colEnd);//36
 
     Matrix minorSubMatrix(int row, int col);//37
 
     Matrix transposeMatrix(Matrix m);//38번
 
-    double trace(Matrix m);//39번
+    Scalar trace(Matrix m);//39번
 
     boolean isSquare(Matrix m);//40번
     boolean isUpperTriangular(Matrix m);//41번
@@ -101,16 +102,16 @@ public interface Matrix {
     boolean isIdentity(Matrix m);//43번
     boolean isZero(Matrix m);//44번
 
-    Matrix rowSwap(int row1, int row2);//45번
-    Matrix colSwap(int col1, int col2);//46번
+    void rowSwap(int row1, int row2);//45번
+    void colSwap(int col1, int col2);//46번
 
-    Matrix rowMultiply(int index, Scalar val);//47번
-    Matrix colMultiply(int index, Scalar val);//48번
+    void rowMultiply(int index, Scalar val);//47번
+    void colMultiply(int index, Scalar val);//48번
 
-    Matrix rowAddOtherRow(int targetRow, int sourceRow, Scalar factor);//49번, targetRow에 sourceRow의 factor배 를더함
-    Matrix colAddOtherCol(int targetCol, int sourceCol, Scalar factor);//50번, targetCol에 sourceCol의 factor배 더함
+    void rowAddOtherRow(int targetRow, int sourceRow, Scalar val);//49번, targetRow에 sourceRow의 factor배 를더함
+    void colAddOtherCol(int targetCol, int sourceCol, Scalar val);//50번, targetCol에 sourceCol의 factor배 더함
 
-    Matrix getRREF(Matrix m);//51번, 본인의 rref 리턴턴
+    Matrix getRREF(Matrix m);//51번, 본인의 rref 리턴
     Matrix isRREF(Matrix m);//52번, 본인의 rref 여부 리턴
 
     Matrix getMatrix(Matrix m);//53번, 본인의 행렬 리턴

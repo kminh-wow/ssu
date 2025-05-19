@@ -1,5 +1,6 @@
 package tensor;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Random;
 
 class ScalarImpl implements Scalar, Comparable<Scalar> {
@@ -10,18 +11,19 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
     ScalarImpl(int i, int j) {//02번
         if (i >= j) throw new IllegalArgumentException("i must be less than j");
         Random rand = new Random();
-        double randomVal = rand.nextDouble(j - i) + i;
-        BigDecimal rounded = new BigDecimal(randomVal).setScale(5, BigDecimal.ROUND_HALF_UP);
-        this.value = rounded;
+        BigDecimal range = new BigDecimal(j - i);
+        BigDecimal randomDecimal = new BigDecimal(rand.nextDouble()).multiply(range).add(new BigDecimal(i));
+        this.value = randomDecimal.setScale(5, RoundingMode.HALF_UP);
     }
+    @Override
     public String getValue() {
         return value.toPlainString();  // 또는 stripTrailingZeros().toPlainString()
     }
-
+    @Override
     public void setValue(String val) {
         this.value = new BigDecimal(val);
     }
-
+    @Override
     public String toString() {
         return this.value.toString();
     }
@@ -53,25 +55,6 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
     public void multiply(Scalar other) {
         this.value = this.value.multiply(new java.math.BigDecimal(other.getValue()));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -66,17 +66,14 @@ class MatrixImpl implements Matrix {
         }
     }
 
-    MatrixImpl Identity(int n){
-        return null;//수정쳐해라
-    }
-
+    @Override
     public Scalar getValue(int row, int col) {
         if (row < 0 || row >= getRowCount() || col < 0 || col >= getColumnCount()) {
             throw new IndexOutOfBoundsException("Matrix index out of bounds: (" + row + ", " + col + ")");
         }
         return elements.get(row).get(col).clone();
     }
-
+    @Override
     public void setValue(int row, int col, Scalar val) {
         if (row < 0 || row >= getRowCount() || col < 0 || col >= getColumnCount()) {
             throw new IndexOutOfBoundsException("Matrix index out of bounds: (" + row + ", " + col + ")");
@@ -84,10 +81,11 @@ class MatrixImpl implements Matrix {
         elements.get(row).set(col, val.clone());
     }
     //여기까지함
-
+    @Override
     public int getRowCount() {//13번
         return elements.size();
     }
+    @Override
     public int getColumnCount() {
         if (elements.isEmpty()) return 0;
         return elements.get(0).size();
@@ -256,7 +254,7 @@ class MatrixImpl implements Matrix {
     }
 
     @Override
-    public double trace(Matrix m) { //39번
+    public Scalar trace(Matrix m) { //39번
         if (m.rowSize() != m.colSize()) {
             throw new IllegalArgumentException("정사각 행렬이 아닙니다.");
         }
@@ -264,7 +262,7 @@ class MatrixImpl implements Matrix {
         for (int i = 0; i < m.rowSize(); i++) {
             sum = sum.add(new java.math.BigDecimal(m.getValue(i, i).getValue()));
         }
-        return sum.doubleValue();
+        return new ScalarImpl(sum.toPlainString());
     }
 
     @Override
@@ -320,89 +318,74 @@ class MatrixImpl implements Matrix {
     }
 
     @Override
-    public Matrix rowSwap(int row1, int row2) { //45번
+    public void rowSwap(int row1, int row2) { //45번
         if (row1 < 0 || row2 < 0 || row1 >= this.rowSize() || row2 >= this.rowSize()) {
             throw new IndexOutOfBoundsException("행 인덱스가 범위를 벗어났습니다.");
         }
-        Matrix copy = this.clone();
         for (int j = 0; j < this.colSize(); j++) {
-            Scalar temp = copy.getValue(row1, j);
-            copy.setValue(row1, j, copy.getValue(row2, j));
-            copy.setValue(row2, j, temp);
+            Scalar temp = this.getValue(row1, j);
+            this.setValue(row1, j, this.getValue(row2, j));
+            this.setValue(row2, j, temp);
         }
-        return copy;
     }
 
     @Override
-    public Matrix colSwap(int col1, int col2) { //46번
+    public void colSwap(int col1, int col2) { //46번
         if (col1 < 0 || col2 < 0 || col1 >= this.colSize() || col2 >= this.colSize()) {
             throw new IndexOutOfBoundsException("열 인덱스가 범위를 벗어났습니다.");
         }
-        Matrix copy = this.clone();
         for (int i = 0; i < this.rowSize(); i++) {
-            Scalar temp = copy.getValue(i, col1);
-            copy.setValue(i, col1, copy.getValue(i, col2));
-            copy.setValue(i, col2, temp);
+            Scalar temp = this.getValue(i, col1);
+            this.setValue(i, col1, this.getValue(i, col2));
+            this.setValue(i, col2, temp);
         }
-        return copy;
     }
 
     @Override
-    public Matrix rowMultiply(int index, Scalar val) { //47번
+    public void rowMultiply(int index, Scalar val) { //47번
         if (index < 0 || index >= this.rowSize()) {
             throw new IndexOutOfBoundsException("행 인덱스가 범위를 벗어났습니다.");
         }
-        Matrix copy = this.clone();
         for (int j = 0; j < this.colSize(); j++) {
-            Scalar newVal = copy.getValue(index, j).clone();
+            Scalar newVal = this.getValue(index, j).clone();
             newVal.multiply(val);
-            copy.setValue(index, j, newVal);
+            this.setValue(index, j, newVal);
         }
-        return copy;
     }
 
     @Override
-    public Matrix colMultiply(int index, Scalar val) { //48번
+    public void colMultiply(int index, Scalar val) { //48번
         if (index < 0 || index >= this.colSize()) {
             throw new IndexOutOfBoundsException("열 인덱스가 범위를 벗어났습니다.");
         }
-        Matrix copy = this.clone();
         for (int i = 0; i < this.rowSize(); i++) {
-            Scalar newVal = copy.getValue(i, index).clone();
-            newVal.multiply(val); 
-            copy.setValue(i, index, newVal);
+            Scalar newVal = this.getValue(i, index).clone();
+            newVal.multiply(val);
+            this.setValue(i, index, newVal);
         }
-        return copy;
-    }
-
-
-
-    @Override
-    public Matrix rowAddOtherRow(int targetRow, int sourceRow, Scalar factor) { //49번
-        Matrix copy = this.clone();
-        for (int j = 0; j < copy.colSize(); j++) {
-            Scalar addVal = copy.getValue(sourceRow, j).clone();
-            addVal.multiply(factor);
-            Scalar newVal = copy.getValue(targetRow, j).clone();
-            newVal.add(addVal);
-            copy.setValue(targetRow, j, newVal);
-        }
-        return copy;
     }
 
     @Override
-    public Matrix colAddOtherCol(int targetCol, int sourceCol, Scalar factor) { //50번
-        Matrix copy = this.clone();
-        for (int i = 0; i < copy.rowSize(); i++) {
-            Scalar addVal = copy.getValue(i, sourceCol).clone();
+    public void rowAddOtherRow(int targetRow, int sourceRow, Scalar factor) { //49번
+        for (int j = 0; j < this.colSize(); j++) {
+            Scalar addVal = this.getValue(sourceRow, j).clone();
             addVal.multiply(factor);
-            Scalar newVal = copy.getValue(i, targetCol).clone();
+            Scalar newVal = this.getValue(targetRow, j).clone();
             newVal.add(addVal);
-            copy.setValue(i, targetCol, newVal);
+            this.setValue(targetRow, j, newVal);
         }
-        return copy;
     }
 
+    @Override
+    public void colAddOtherCol(int targetCol, int sourceCol, Scalar factor) { //50번
+        for (int i = 0; i < this.rowSize(); i++) {
+            Scalar addVal = this.getValue(i, sourceCol).clone();
+            addVal.multiply(factor);
+            Scalar newVal = this.getValue(i, targetCol).clone();
+            newVal.add(addVal);
+            this.setValue(i, targetCol, newVal);
+        }
+    }
 
     @Override
     public Matrix getRREF(Matrix m) { //51번
