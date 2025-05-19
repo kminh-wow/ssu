@@ -327,7 +327,7 @@ public class Test {
         System.out.println("");
 
         // 30. 벡터 toVerticalMatrix
-        System.out.println("30. 벡터 toVerticalMatrix");
+        System.out.println("30. toVerticalMatrix 벡터 세로로");
         System.out.println(vA.toVerticalMatrix());
         System.out.println("");
 
@@ -337,7 +337,7 @@ public class Test {
         System.out.println("");
 
         // 32. attachHMatrix
-        System.out.println("32. attachHMatrix (가로로 불이기기)");
+        System.out.println("32. attachHMatrix (가로로 불이기)");
         System.out.println("[행렬1]\n" + mA + "\n[행렬2]\n" + mB + "\n결과:\n" + Tensors.attachHMatrix(mA, mB));
         System.out.println("");
 
@@ -354,37 +354,70 @@ public class Test {
         mA.setValue(1, 1, Factory.createScalar("4"));
         int rowIdx = 0;
         int colIdx = 0;
+        Vector expectedAnswer34 = Factory.createVector(new Scalar[]{
+            Factory.createScalar("1"),
+            Factory.createScalar("2")
+        });
         System.out.println("34. 행 벡터 추출");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("추출 행 인덱스: " + rowIdx);
-        System.out.println("결과: " + mA.getRowVector(rowIdx));
+        System.out.println("기댓값: " + expectedAnswer34);
+        Vector result34 = mA.getRowVector(rowIdx);
+        System.out.println("결과: " + result34);
+        System.out.println(result34.equals(expectedAnswer34) ? "통과" : "실패");
         System.out.println("");
 
         // 35. 열 벡터 추출
+        Vector expectedAnswer35 = Factory.createVector(new Scalar[]{
+            Factory.createScalar("1"),
+            Factory.createScalar("3")
+        });
         System.out.println("35. 열 벡터 추출");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("추출 열 인덱스: " + colIdx);
-        System.out.println("결과: " + mA.getColVector(colIdx));
+        System.out.println("기댓값: " + expectedAnswer35);
+        Vector result35 = mA.getColVector(colIdx);
+        System.out.println("결과: " + result35);
+        System.out.println(result35.equals(expectedAnswer35) ? "통과" : "실패");
         System.out.println("");
 
         // 36. 부분 행렬 추출
+        Matrix expectedAnswer36 = Factory.createMatrix(new Scalar[][]{
+            {Factory.createScalar("1")}
+        });
         System.out.println("36. 부분 행렬 추출");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("추출 범위: (0,0)부터 (1,1)까지");
-        System.out.println(mA.extractSubMatrix(0, 1, 0, 1));
+        System.out.println("기댓값:\n" + expectedAnswer36);
+        Matrix result36 = mA.extractSubMatrix(0, 1, 0, 1);
+        System.out.println("결과:\n" + result36);
+        System.out.println(result36.equals(expectedAnswer36) ? "통과" : "실패");
         System.out.println("");
 
         // 37. minor 행렬 추출
+        Matrix expectedAnswer37 = Factory.createMatrix(new Scalar[][]{
+            {Factory.createScalar("4")}
+        });
         System.out.println("37. minor 행렬 추출");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("제거할 행과 열: (0,0)");
-        System.out.println(mA.minorSubMatrix(0, 0));
+        System.out.println("기댓값:\n" + expectedAnswer37);
+        Matrix result37 = mA.minorSubMatrix(0, 0);
+        System.out.println("결과:\n" + result37);
+        System.out.println(result37.equals(expectedAnswer37) ? "통과" : "실패");
         System.out.println("");
 
         // 38. 전치행렬
+        Matrix expectedAnswer38 = Factory.createMatrix(new Scalar[][]{
+            {Factory.createScalar("1"), Factory.createScalar("3")},
+            {Factory.createScalar("2"), Factory.createScalar("4")}
+        });
         System.out.println("38. 전치행렬");
         System.out.println("원본 행렬:\n" + mA);
-        System.out.println("전치 결과:\n" + mA.transposeMatrix(mA));
+        System.out.println("기댓값:\n" + expectedAnswer38);
+        Matrix result38 = mA.transposeMatrix(mA);
+        System.out.println("전치 결과:\n" + result38);
+        System.out.println(result38.equals(expectedAnswer38) ? "통과" : "실패");
         System.out.println("");
 
         // 39. 대각합
@@ -424,51 +457,87 @@ public class Test {
         System.out.println("");
 
         // 45. 행 교환
+        Matrix expectedAnswer45 = Factory.createMatrix(new Scalar[][]{
+            {Factory.createScalar("3"), Factory.createScalar("4")},
+            {Factory.createScalar("1"), Factory.createScalar("2")}
+        });
         System.out.println("45. 행 교환");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("교환할 행: 0행과 1행");
+        System.out.println("기댓값:\n" + expectedAnswer45);
         mA.rowSwap(0, 1);
-        System.out.println(mA);
+        System.out.println("결과:\n" + mA);
+        System.out.println(mA.equals(expectedAnswer45) ? "통과" : "실패");
         System.out.println("");
 
         // 46. 열 교환
+        Matrix expectedAnswer46 = Factory.createMatrix(new Scalar[][]{
+            {Factory.createScalar("4"), Factory.createScalar("3")},
+            {Factory.createScalar("2"), Factory.createScalar("1")}
+        });
         System.out.println("46. 열 교환");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("교환할 열: 0열과 1열");
+        System.out.println("기댓값:\n" + expectedAnswer46);
         mA.colSwap(0, 1);
-        System.out.println(mA);
+        System.out.println("결과:\n" + mA);
+        System.out.println(mA.equals(expectedAnswer46) ? "통과" : "실패");
         System.out.println("");
 
         // 47. 행 스칼라 곱
+        Matrix expectedAnswer47 = Factory.createMatrix(new Scalar[][]{
+            {Factory.createScalar("8"), Factory.createScalar("6")},
+            {Factory.createScalar("2"), Factory.createScalar("1")}
+        });
         System.out.println("47. 행 스칼라 곱");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("곱할 행: 0행, 스칼라: 2");
+        System.out.println("기댓값:\n" + expectedAnswer47);
         mA.rowMultiply(0, Factory.createScalar("2"));
-        System.out.println(mA);
+        System.out.println("결과:\n" + mA);
+        System.out.println(mA.equals(expectedAnswer47) ? "통과" : "실패");
         System.out.println("");
 
         // 48. 열 스칼라 곱
+        Matrix expectedAnswer48 = Factory.createMatrix(new Scalar[][]{
+            {Factory.createScalar("16"), Factory.createScalar("6")},
+            {Factory.createScalar("4"), Factory.createScalar("1")}
+        });
         System.out.println("48. 열 스칼라 곱");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("곱할 열: 0열, 스칼라: 2");
+        System.out.println("기댓값:\n" + expectedAnswer48);
         mA.colMultiply(0, Factory.createScalar("2"));
-        System.out.println(mA);
+        System.out.println("결과:\n" + mA);
+        System.out.println(mA.equals(expectedAnswer48) ? "통과" : "실패");
         System.out.println("");
 
         // 49. 행에 다른 행의 상수배 더하기
+        Matrix expectedAnswer49 = Factory.createMatrix(new Scalar[][]{
+            {Factory.createScalar("24"), Factory.createScalar("8")},
+            {Factory.createScalar("4"), Factory.createScalar("1")}
+        });
         System.out.println("49. 행에 다른 행의 상수배 더하기");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("대상 행: 0행, 더할 행: 1행, 스칼라: 2");
+        System.out.println("기댓값:\n" + expectedAnswer49);
         mA.rowAddOtherRow(0, 1, Factory.createScalar("2"));
-        System.out.println(mA);
+        System.out.println("결과:\n" + mA);
+        System.out.println(mA.equals(expectedAnswer49) ? "통과" : "실패");
         System.out.println("");
 
         // 50. 열에 다른 열의 상수배 더하기
+        Matrix expectedAnswer50 = Factory.createMatrix(new Scalar[][]{
+            {Factory.createScalar("40"), Factory.createScalar("8")},
+            {Factory.createScalar("6"), Factory.createScalar("1")}
+        });
         System.out.println("50. 열에 다른 열의 상수배 더하기");
         System.out.println("원본 행렬:\n" + mA);
         System.out.println("대상 열: 0열, 더할 열: 1열, 스칼라: 2");
+        System.out.println("기댓값:\n" + expectedAnswer50);
         mA.colAddOtherCol(0, 1, Factory.createScalar("2"));
-        System.out.println(mA);
+        System.out.println("결과:\n" + mA);
+        System.out.println(mA.equals(expectedAnswer50) ? "통과" : "실패");
         System.out.println("");
 
         // 51. RREF 변환
