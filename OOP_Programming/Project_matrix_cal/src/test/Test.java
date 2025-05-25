@@ -6,10 +6,13 @@ public class Test {
     public static void main(String[] args) {
         try {
             // 1. 스칼라 생성 (String)
-            Scalar sA = Factory.createScalar("3.14");
+            Scalar expectedAnswer1 = Factory.createScalar("3.14");
             System.out.println("1. 스칼라 생성 (String)");
             System.out.println("인자값: \"3.14\"");
-            System.out.println(sA);
+            System.out.println("기댓값: " + expectedAnswer1);
+            Scalar sA = Factory.createScalar("3.14");
+            System.out.println("결과: " + sA);
+            System.out.println(sA.equals(expectedAnswer1) ? "통과" : "실패");
             System.out.println("");
 
             // 2. 스칼라 생성 (int, int) 무작위
@@ -24,11 +27,14 @@ public class Test {
             System.out.println();
 
             // 3. 벡터 생성 (n, val)
-            Vector vA = Factory.createVector(4, Factory.createScalar("2"));
+            Vector expectedAnswer3 = Factory.createVector(4, Factory.createScalar("2"));
             System.out.println("3. 벡터 생성 (n, val)");
             System.out.println("인자값: n=4, val=2");
-            System.out.println(vA);
-            System.out.println();
+            System.out.println("기댓값: " + expectedAnswer3);
+            Vector vA = Factory.createVector(4, Factory.createScalar("2"));
+            System.out.println("결과: " + vA);
+            System.out.println(vA.equals(expectedAnswer3) ? "통과" : "실패");
+            System.out.println("");
 
             // 4. 벡터 생성 (i, j, n) 무작위
             Scalar[] randomVector = new Scalar[4];
@@ -53,18 +59,24 @@ public class Test {
 
             // 5. 벡터 생성 (배열)
             Scalar[] arr = {Factory.createScalar("1"), Factory.createScalar("2"), Factory.createScalar("3")};
-            Vector vC = Factory.createVector(arr);
+            Vector expectedAnswer5 = Factory.createVector(arr);
             System.out.println("5. 벡터 생성 (배열)");
             System.out.println("인자값: [1, 2, 3]");
-            System.out.println(vC);
-            System.out.println();
+            System.out.println("기댓값: " + expectedAnswer5);
+            Vector vC = Factory.createVector(arr);
+            System.out.println("결과: " + vC);
+            System.out.println(vC.equals(expectedAnswer5) ? "통과" : "실패");
+            System.out.println("");
 
             // 6. 행렬 생성 (m, n, val)
-            Matrix mA = Factory.createMatrix(2, 3, Factory.createScalar("7"));
+            Matrix expectedAnswer6 = Factory.createMatrix(2, 3, Factory.createScalar("7"));
             System.out.println("6. 행렬 생성 (m, n, val)");
             System.out.println("인자값: m=2, n=3, val=7");
-            System.out.println(mA);
-            System.out.println();
+            System.out.println("기댓값: " + expectedAnswer6);
+            Matrix mA = Factory.createMatrix(2, 3, Factory.createScalar("7"));
+            System.out.println("결과: " + mA);
+            System.out.println(mA.equals(expectedAnswer6) ? "통과" : "실패");
+            System.out.println("");
 
             // 7. 행렬 생성 (i, j, m, n) 무작위
             Scalar[][] randomMatrix = new Scalar[2][3];
@@ -98,9 +110,12 @@ public class Test {
                 {Factory.createScalar("3"), Factory.createScalar("4")},
                 {Factory.createScalar("5"), Factory.createScalar("6")}
             };
-            Matrix mC = Factory.createMatrix(arr2);
+            Matrix expectedAnswer8 = Factory.createMatrix(arr2);
             System.out.println("8. 행렬 생성 (배열)");
-            System.out.println(mC);
+            System.out.println("인자값: " + expectedAnswer8);
+            Matrix mC = Factory.createMatrix(arr2);
+            System.out.println("결과: " + mC);
+            System.out.println(mC.equals(expectedAnswer8) ? "통과" : "실패");
             System.out.println("");
 
             // 9. 행렬 생성 (csv 파일) - 파일이 없으므로 생략 또는 주석처리
@@ -108,9 +123,13 @@ public class Test {
             // System.out.println(Factory.createMatrix("matrix.csv"));
             
             // 10. 단위행렬 생성
-            Matrix mD = Factory.creatIdentityMatrix(3);
+            Matrix expectedAnswer10 = Factory.creatIdentityMatrix(3);
             System.out.println("10. 단위행렬 생성");
-            System.out.println(mD);
+            System.out.println("인자값: n=3");
+            System.out.println("기댓값: " + expectedAnswer10);
+            Matrix mD = Factory.creatIdentityMatrix(3);
+            System.out.println("결과: " + mD);
+            System.out.println(mD.equals(expectedAnswer10) ? "통과" : "실패");
             System.out.println("");
 
             // 11. 특정 위치의 요소를 지정/조회할 수 있다.
@@ -150,7 +169,7 @@ public class Test {
             //String a = "a";
             // 15. equals() 객체의 동등성 판단
             try {
-                Scalar s2 = Factory.createScalar("333");
+                Scalar s2 = Factory.createScalar("4.5");
                 System.out.println("15. equals() 객체의 동등성 판단");
                 System.out.println("비교 대상 1: " + sA);
                 System.out.println("비교 대상 2: " + s2);
@@ -165,7 +184,7 @@ public class Test {
             System.out.println("16. Comparable 스칼라 대소 비교");
             System.out.println("비교 대상 1: " + sA);
             System.out.println("비교 대상 2: " + s3);
-            System.out.println("결과: " + "비교 대상 1"+sA+ "이 비교 대상 2"+s3+ "보다 " + (sA.compareTo(s3) > 0 ? "크다" : "작다"));
+            System.out.println("결과: " + sA + "은/는 " + s3 + "보다 " + (sA.compareTo(s3) > 0 ? "크다" : "작다"));
             System.out.println("");
 
             // 17. clone() 객체 복제
