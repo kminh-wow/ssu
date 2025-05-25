@@ -123,11 +123,11 @@ public class Test {
             // System.out.println(Factory.createMatrix("matrix.csv"));
             
             // 10. 단위행렬 생성
-            Matrix expectedAnswer10 = Factory.creatIdentityMatrix(3);
+            Matrix expectedAnswer10 = Factory.createIdentityMatrix(3);
             System.out.println("10. 단위행렬 생성");
             System.out.println("인자값: n=3");
             System.out.println("기댓값: " + expectedAnswer10);
-            Matrix mD = Factory.creatIdentityMatrix(3);
+            Matrix mD = Factory.createIdentityMatrix(3);
             System.out.println("결과: " + mD);
             System.out.println(mD.equals(expectedAnswer10) ? "통과" : "실패");
             System.out.println("");
@@ -324,7 +324,7 @@ public class Test {
             System.out.println("24. static 스칼라 덧셈");
             System.out.println("14 + 5.29703 =");
             System.out.println("기댓값: " + expectedAnswer24);
-            Scalar result24 = Factory.add(Factory.createScalar("14"), Factory.createScalar("5.29703"));
+            Scalar result24 = Tensors.add(Factory.createScalar("14"), Factory.createScalar("5.29703"));
             System.out.println("결과: " + result24);
             System.out.println(result24.equals(expectedAnswer24) ? "통과" : "실패");
             System.out.println("");
@@ -334,7 +334,7 @@ public class Test {
             System.out.println("25. static 스칼라 곱셈");
             System.out.println("14 * 5.29703 =");
             System.out.println("기댓값: " + expectedAnswer25);
-            Scalar result25 = Factory.multiply(Factory.createScalar("14"), Factory.createScalar("5.29703"));
+            Scalar result25 = Tensors.multiply(Factory.createScalar("14"), Factory.createScalar("5.29703"));
             System.out.println("결과: " + result25);
             System.out.println(result25.equals(expectedAnswer25) ? "통과" : "실패");
             System.out.println("");
