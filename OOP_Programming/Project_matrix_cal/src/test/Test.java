@@ -1,5 +1,6 @@
 package test;
 import tensor.*;
+import java.util.Random;
 
 public class Test {
     public static void main(String[] args) {
@@ -12,10 +13,14 @@ public class Test {
             System.out.println("");
 
             // 2. 스칼라 생성 (int, int) 무작위
-            Scalar sB = Factory.createScalar("5.0");  // 1~10 사이의 고정값 5.0으로 변경
+            Random random = new Random();
+            double randomValue = 1 + random.nextDouble() * 9; // 1~10 사이의 무작위값
+            Scalar sB = Factory.createScalar(String.valueOf(randomValue));
             System.out.println("2. 스칼라 생성 (int i, int j) 무작위");
             System.out.println("i = 1, j = 10");
             System.out.println(sB);
+            double value = Double.parseDouble(sB.getValue());
+            System.out.println(value >= 1 && value <= 10 ? "통과" : "실패");
             System.out.println();
 
             // 3. 벡터 생성 (n, val)
@@ -26,15 +31,24 @@ public class Test {
             System.out.println();
 
             // 4. 벡터 생성 (i, j, n) 무작위
-            Vector vB = Factory.createVector(new Scalar[]{
-                Factory.createScalar("3"),
-                Factory.createScalar("4"),
-                Factory.createScalar("5"),
-                Factory.createScalar("6")
-            });
+            Scalar[] randomVector = new Scalar[4];
+            for (int i = 0; i < 4; i++) {
+                double val = 1 + random.nextDouble() * 4; // 1~5 사이의 무작위값
+                randomVector[i] = Factory.createScalar(String.valueOf(val));
+            }
+            Vector vB = Factory.createVector(randomVector);
             System.out.println("4. 벡터 생성 (i, j, n) 무작위");
             System.out.println("인자값: i=1, j=5 사이 무작위, n=4");
             System.out.println(vB);
+            boolean allInRange = true;
+            for (int i = 0; i < vB.size(); i++) {
+                double val = Double.parseDouble(vB.getValue(i).getValue());
+                if (val < 1 || val > 5) {
+                    allInRange = false;
+                    break;
+                }
+            }
+            System.out.println(allInRange ? "통과" : "실패");
             System.out.println();
 
             // 5. 벡터 생성 (배열)
@@ -53,13 +67,29 @@ public class Test {
             System.out.println();
 
             // 7. 행렬 생성 (i, j, m, n) 무작위
-            Matrix mB = Factory.createMatrix(new Scalar[][]{
-                {Factory.createScalar("2"), Factory.createScalar("3"), Factory.createScalar("4")},
-                {Factory.createScalar("5"), Factory.createScalar("6"), Factory.createScalar("7")}
-            });
+            Scalar[][] randomMatrix = new Scalar[2][3];
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < 3; j++) {
+                    double val = 1 + random.nextDouble() * 4; // 1~5 사이의 무작위값
+                    randomMatrix[i][j] = Factory.createScalar(String.valueOf(val));
+                }
+            }
+            Matrix mB = Factory.createMatrix(randomMatrix);
             System.out.println("7. 행렬 생성 (i, j, m, n) 무작위");
             System.out.println("인자값: i=1, j=5 사이 무작위, m=2, n=3");
             System.out.println(mB);
+            boolean allMatrixInRange = true;
+            for (int i = 0; i < mB.rowSize(); i++) {
+                for (int j = 0; j < mB.colSize(); j++) {
+                    double val = Double.parseDouble(mB.getValue(i, j).getValue());
+                    if (val < 1 || val > 5) {
+                        allMatrixInRange = false;
+                        break;
+                    }
+                }
+                if (!allMatrixInRange) break;
+            }
+            System.out.println(allMatrixInRange ? "통과" : "실패");
             System.out.println();
 
             // 8. 행렬 생성 (배열)
@@ -117,7 +147,7 @@ public class Test {
             System.out.println("벡터: " + vA);
             System.out.println("행렬: " + mA);
             System.out.println("");
-            String a = "a";
+            //String a = "a";
             // 15. equals() 객체의 동등성 판단
             try {
                 Scalar s2 = Factory.createScalar("333");
@@ -258,21 +288,21 @@ public class Test {
             System.out.println("");
 
             // 24. static 스칼라 덧셈
-            Scalar expectedAnswer24 = Factory.createScalar("19.0");
-            Scalar result24 = Tensors.add(sA, sB);
+            Scalar expectedAnswer24 = Factory.createScalar("19.29703");
             System.out.println("24. static 스칼라 덧셈");
-            System.out.println(sA + " + " + sB + " = ");
+            System.out.println("14 + 5.29703 =");
             System.out.println("기댓값: " + expectedAnswer24);
+            Scalar result24 = Factory.add(Factory.createScalar("14"), Factory.createScalar("5.29703"));
             System.out.println("결과: " + result24);
             System.out.println(result24.equals(expectedAnswer24) ? "통과" : "실패");
             System.out.println("");
 
             // 25. static 스칼라 곱셈
-            Scalar expectedAnswer25 = Factory.createScalar("70.0");
-            Scalar result25 = Tensors.multiply(sA, sB);
+            Scalar expectedAnswer25 = Factory.createScalar("74.15842");
             System.out.println("25. static 스칼라 곱셈");
-            System.out.println(sA + " * " + sB + " = ");
+            System.out.println("14 * 5.29703 =");
             System.out.println("기댓값: " + expectedAnswer25);
+            Scalar result25 = Factory.multiply(Factory.createScalar("14"), Factory.createScalar("5.29703"));
             System.out.println("결과: " + result25);
             System.out.println(result25.equals(expectedAnswer25) ? "통과" : "실패");
             System.out.println("");
