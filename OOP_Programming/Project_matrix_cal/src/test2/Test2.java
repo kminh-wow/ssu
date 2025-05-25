@@ -124,6 +124,20 @@ public class Test2 {
         System.out.println("조회 인덱스: " + (int)(idx11+1));
         System.out.println("기댓값: " + expectedAnswer11);
         System.out.println("결과: " + vA.getValue(idx11));
+        System.out.println(vA.getValue(idx11).equals(expectedAnswer11) ? "통과" : "실패");
+        System.out.println("");
+
+        // 11-1. 행렬의 특정 위치 요소 지정/조회
+        Matrix mTest = Factory.createMatrix(2, 2, Factory.createScalar("0"));
+        Scalar expectedValue = Factory.createScalar("7");
+        mTest.setValue(0, 1, expectedValue);
+        System.out.println("11-1. 행렬의 특정 위치 요소 지정/조회");
+        System.out.println("원본 행렬:\n" + mTest);
+        System.out.println("지정 위치: (0,1)");
+        System.out.println("지정 값: " + expectedValue);
+        Scalar result = mTest.getValue(0, 1);
+        System.out.println("조회 결과: " + result);
+        System.out.println(result.equals(expectedValue) ? "통과" : "실패");
         System.out.println("");
 
         // 12. (only 스칼라) 값을 지정/조회할 수 있다.
