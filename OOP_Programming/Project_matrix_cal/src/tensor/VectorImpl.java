@@ -1,5 +1,7 @@
 package tensor;
 import java.util.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 
 
@@ -43,7 +45,9 @@ class VectorImpl implements Vector {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
         for (int i = 0; i < elements.size(); i++) {
-            sb.append(elements.get(i).toString());
+            BigDecimal val = new BigDecimal(elements.get(i).getValue());
+            val = val.setScale(5, RoundingMode.HALF_UP);
+            sb.append(val.stripTrailingZeros().toPlainString());
             if (i < elements.size() - 1) sb.append(", ");
         }
         sb.append("]");

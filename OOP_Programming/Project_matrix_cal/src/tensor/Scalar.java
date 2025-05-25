@@ -10,7 +10,7 @@ public interface Scalar {
     void add(Scalar other);
     void multiply(Scalar other);
     int compareTo(Scalar other);
-    static Scalar add(Scalar s1, Scalar s2) {//24번
+    static Scalar add(Scalar s1, Scalar s2) {//24번 (이게 디폴트 메서드라고 부름)
         java.math.BigDecimal v1 = new java.math.BigDecimal(s1.getValue());
         java.math.BigDecimal v2 = new java.math.BigDecimal(s2.getValue());
         return new ScalarImpl(v1.add(v2).toPlainString());
@@ -21,5 +21,6 @@ public interface Scalar {
         java.math.BigDecimal v2 = new java.math.BigDecimal(s2.getValue());
         return new ScalarImpl(v1.multiply(v2).toPlainString());
     }
+    
 
 }

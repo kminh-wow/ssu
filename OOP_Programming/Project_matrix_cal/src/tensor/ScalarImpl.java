@@ -2,11 +2,16 @@ package tensor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Random;
+import java.util.Objects;
 
 class ScalarImpl implements Scalar, Comparable<Scalar> {
     private BigDecimal value;
     ScalarImpl(String val) {      //01번
-        this.value = new BigDecimal(val);
+        try {
+            this.value = new BigDecimal(val);
+        } catch (NumberFormatException e) {
+            throw new TensorException("스칼라 값이 올바른 숫자가 아닙니다: " + val);
+        }
     }
     ScalarImpl(int i, int j) {//02번
         if (i >= j) throw new IllegalArgumentException("i must be less than j");
@@ -19,21 +24,29 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
     public String getValue() {
         return value.toPlainString();  // 또는 stripTrailingZeros().toPlainString()
     }
+    
     @Override
     public void setValue(String val) {
         this.value = new BigDecimal(val);
     }
     @Override
     public String toString() {
-        return this.value.toString();
+        BigDecimal val = value.setScale(5, RoundingMode.HALF_UP);
+        return val.stripTrailingZeros().toPlainString();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
+        if (obj == null) return false;
         if (!(obj instanceof Scalar)) return false;
         Scalar other = (Scalar) obj;
-        return this.value.compareTo(new java.math.BigDecimal(other.getValue())) == 0;
+        return this.value.equals(new BigDecimal(other.getValue()));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 
     @Override
@@ -55,7 +68,4 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
     public void multiply(Scalar other) {
         this.value = this.value.multiply(new java.math.BigDecimal(other.getValue()));
     }
-
-
-
 }

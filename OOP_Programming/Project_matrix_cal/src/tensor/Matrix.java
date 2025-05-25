@@ -114,7 +114,7 @@ public interface Matrix {
     Matrix getRREF(Matrix m);//51번, 본인의 rref 리턴
     Matrix isRREF(Matrix m);//52번, 본인의 rref 여부 리턴
 
-    Matrix getMatrix(Matrix m);//53번, 본인의 행렬 리턴
+    Scalar getDeterminant(Matrix m);//53번, 행렬식 구하기
     Matrix getInverseMatrix(Matrix m);//54번, 본인의 역행렬 리턴
 
 }

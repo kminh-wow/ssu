@@ -2,6 +2,8 @@ package tensor;
 import java.io.*;
 import java.util.*;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 class MatrixImpl implements Matrix {
     private List<List<Scalar>> elements;
 
@@ -97,7 +99,10 @@ class MatrixImpl implements Matrix {
             sb.append("[");
             List<Scalar> row = elements.get(i);
             for (int j = 0; j < row.size(); j++) {
-                sb.append(row.get(j).toString());
+                // 소수점 5자리까지 표시
+                BigDecimal val = new BigDecimal(row.get(j).getValue());
+                val = val.setScale(5, RoundingMode.HALF_UP);
+                sb.append(val.stripTrailingZeros().toPlainString());
                 if (j < row.size() - 1) sb.append(", ");
             }
             sb.append("]");
@@ -110,10 +115,16 @@ class MatrixImpl implements Matrix {
         if (this == obj) return true;
         if (!(obj instanceof Matrix)) return false;
         Matrix other = (Matrix) obj;
-        if (this.rowSize() != other.rowSize() || this.colSize() != other.colSize()) return false;
+        if (this.rowSize() != other.rowSize() || this.colSize() != other.colSize()) return false;        
+        // 소수점 6자리까지 비교
+        BigDecimal epsilon = new BigDecimal("0.000001");
         for (int i = 0; i < this.rowSize(); i++) {
             for (int j = 0; j < this.colSize(); j++) {
-                if (!this.getValue(i, j).equals(other.getValue(i, j))) return false;
+                BigDecimal val1 = new BigDecimal(this.getValue(i, j).getValue());
+                BigDecimal val2 = new BigDecimal(other.getValue(i, j).getValue());
+                if (val1.subtract(val2).abs().compareTo(epsilon) > 0) {
+                    return false;
+                }
             }
         }
         return true;
@@ -463,14 +474,85 @@ class MatrixImpl implements Matrix {
     }
 
     @Override
-    public Matrix getMatrix(Matrix m) { //53번
-        return m.clone();
+    public Scalar getDeterminant(Matrix m) { //53번
+        if (!isSquare(m)) {
+            throw new IllegalArgumentException("정사각 행렬만 행렬식을 구할 수 있습니다.");
+        }
+        
+        int n = m.rowSize();
+        
+        // 1x1 행렬
+        if (n == 1) {
+            return m.getValue(0, 0).clone();
+        }
+        
+        // 2x2 행렬
+        if (n == 2) {
+            Scalar a = m.getValue(0, 0);
+            Scalar b = m.getValue(0, 1);
+            Scalar c = m.getValue(1, 0);
+            Scalar d = m.getValue(1, 1);
+            
+            Scalar ad = a.clone();
+            ad.multiply(d);
+            
+            Scalar bc = b.clone();
+            bc.multiply(c);
+            
+            Scalar result = ad.clone();
+            Scalar negBc = bc.clone();
+            negBc.multiply(new ScalarImpl("-1"));
+            result.add(negBc);
+            return result;
+        }
+        
+        // nxn 행렬 (n > 2)
+        Scalar determinant = new ScalarImpl("0");
+        for (int j = 0; j < n; j++) {
+            Scalar cofactor = m.getValue(0, j).clone();
+            Matrix minor = m.minorSubMatrix(0, j);
+            Scalar minorDet = getDeterminant(minor);
+            cofactor.multiply(minorDet);
+            
+            if (j % 2 == 0) {
+                determinant.add(cofactor);
+            } else {
+                Scalar negCofactor = cofactor.clone();
+                negCofactor.multiply(new ScalarImpl("-1"));
+                determinant.add(negCofactor);
+            }
+        }
+        
+        return determinant;
     }
 
     @Override
     public Matrix getInverseMatrix(Matrix m) { //54번
         int n = m.rowSize();
         if (n != m.colSize()) throw new IllegalArgumentException("정사각 행렬만 역행렬을 구할 수 있습니다.");
+        
+        // 행렬식이 0인지 확인
+        Scalar det = getDeterminant(m);
+        if (det.equals(new ScalarImpl("0"))) {
+            throw new ArithmeticException("역행렬이 존재하지 않습니다.");
+        }
+        
+        // 2x2 행렬의 경우 직접 계산
+        if (n == 2) {
+            Scalar a = m.getValue(0, 0);
+            Scalar b = m.getValue(0, 1);
+            Scalar c = m.getValue(1, 0);
+            Scalar d = m.getValue(1, 1);
+            
+            Scalar[][] inv = new Scalar[2][2];
+            inv[0][0] = new ScalarImpl((new BigDecimal(d.getValue()).divide(new BigDecimal(det.getValue()), 10, RoundingMode.HALF_UP)).toPlainString());
+            inv[0][1] = new ScalarImpl((new BigDecimal(b.getValue()).multiply(new BigDecimal("-1")).divide(new BigDecimal(det.getValue()), 10, RoundingMode.HALF_UP)).toPlainString());
+            inv[1][0] = new ScalarImpl((new BigDecimal(c.getValue()).multiply(new BigDecimal("-1")).divide(new BigDecimal(det.getValue()), 10, RoundingMode.HALF_UP)).toPlainString());
+            inv[1][1] = new ScalarImpl((new BigDecimal(a.getValue()).divide(new BigDecimal(det.getValue()), 10, RoundingMode.HALF_UP)).toPlainString());
+            
+            return new MatrixImpl(inv);
+        }
+        
         // 단위행렬 생성
         Scalar[][] identity = new Scalar[n][n];
         for (int i = 0; i < n; i++) {
@@ -478,6 +560,7 @@ class MatrixImpl implements Matrix {
                 identity[i][j] = new ScalarImpl(i == j ? "1" : "0");
             }
         }
+        
         Matrix aug = new MatrixImpl(n, 2 * n, new ScalarImpl("0"));
         // 왼쪽에 m, 오른쪽에 단위행렬을 합친 확장행렬 생성
         for (int i = 0; i < n; i++) {
@@ -486,15 +569,43 @@ class MatrixImpl implements Matrix {
                 aug.setValue(i, j + n, identity[i][j].clone());
             }
         }
+        
         // 가우스-조르당 소거법
         for (int i = 0; i < n; i++) {
+            // 피벗 선택
+            int maxRow = i;
+            BigDecimal maxVal = new BigDecimal(aug.getValue(i, i).getValue()).abs();
+            for (int k = i + 1; k < n; k++) {
+                BigDecimal val = new BigDecimal(aug.getValue(k, i).getValue()).abs();
+                if (val.compareTo(maxVal) > 0) {
+                    maxVal = val;
+                    maxRow = k;
+                }
+            }
+            
+            // 행 교환
+            if (maxRow != i) {
+                for (int j = 0; j < 2 * n; j++) {
+                    Scalar temp = aug.getValue(i, j);
+                    aug.setValue(i, j, aug.getValue(maxRow, j));
+                    aug.setValue(maxRow, j, temp);
+                }
+            }
+            
+            // 대각선 요소가 0인지 확인
+            if (aug.getValue(i, i).equals(new ScalarImpl("0"))) {
+                throw new ArithmeticException("역행렬이 존재하지 않습니다.");
+            }
+            
+            // 현재 행을 대각선 요소로 나누기
             Scalar diag = aug.getValue(i, i).clone();
-            if (diag.equals(new ScalarImpl("0"))) throw new ArithmeticException("역행렬이 존재하지 않습니다.");
             for (int j = 0; j < 2 * n; j++) {
                 Scalar val = aug.getValue(i, j).clone();
-                val = new ScalarImpl((new java.math.BigDecimal(val.getValue()).divide(new java.math.BigDecimal(diag.getValue()), java.math.MathContext.DECIMAL128)).toPlainString());
+                val = new ScalarImpl((new BigDecimal(val.getValue()).divide(new BigDecimal(diag.getValue()), 10, RoundingMode.HALF_UP)).toPlainString());
                 aug.setValue(i, j, val);
             }
+            
+            // 다른 행들의 현재 열을 0으로 만들기
             for (int k = 0; k < n; k++) {
                 if (k == i) continue;
                 Scalar factor = aug.getValue(k, i).clone();
@@ -502,11 +613,12 @@ class MatrixImpl implements Matrix {
                     Scalar val = aug.getValue(k, j).clone();
                     Scalar sub = aug.getValue(i, j).clone();
                     sub.multiply(factor);
-                    val = new ScalarImpl((new java.math.BigDecimal(val.getValue()).subtract(new java.math.BigDecimal(sub.getValue()), java.math.MathContext.DECIMAL128)).toPlainString());
+                    val = new ScalarImpl((new BigDecimal(val.getValue()).subtract(new BigDecimal(sub.getValue()), new MathContext(10, RoundingMode.HALF_UP))).toPlainString());
                     aug.setValue(k, j, val);
                 }
             }
         }
+        
         // 오른쪽 n x n 부분이 역행렬
         Scalar[][] inv = new Scalar[n][n];
         for (int i = 0; i < n; i++) {
@@ -514,6 +626,7 @@ class MatrixImpl implements Matrix {
                 inv[i][j] = aug.getValue(i, j + n).clone();
             }
         }
+        
         return new MatrixImpl(inv);
     }
 }
