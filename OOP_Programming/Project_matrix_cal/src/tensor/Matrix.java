@@ -14,13 +14,11 @@ public interface Matrix {
     void multiply(Matrix other);
     Vector getRowVector(int row);//34
     Vector getColVector(int col);//35
-    public int getRowCount();
-    public int getColumnCount();
     Matrix extractSubMatrix(int rowStart, int rowEnd, int colStart, int colEnd);//36
 
     Matrix minorSubMatrix(int row, int col);//37
 
-    Matrix transposeMatrix(Matrix m);//38번
+    Matrix transposeMatrix();//38번
 
     Scalar trace();//39번
     boolean isSquare();//40번
@@ -32,8 +30,8 @@ public interface Matrix {
     void rowSwap(int row1, int row2);//45번
     void colSwap(int col1, int col2);//46번
 
-    void rowMultiply(int index, Scalar val);//47번
-    void colMultiply(int index, Scalar val);//48번
+    void rowMultiply(int row, Scalar val);//47번
+    void colMultiply(int col, Scalar val);//48번
 
     void rowAddOtherRow(int targetRow, int sourceRow, Scalar val);//49번, targetRow에 sourceRow의 factor배 를더함
     void colAddOtherCol(int targetCol, int sourceCol, Scalar val);//50번, targetCol에 sourceCol의 factor배 더함

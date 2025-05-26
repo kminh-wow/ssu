@@ -10,10 +10,10 @@ public interface Vector {
     boolean equals(Object obj);
     Vector clone();
     void add(Vector other);
-    void multiply(Scalar scalar);
+    void multiply(Scalar val);
     //30
     Matrix toVerticalMatrix();
     //31
-    Matrix toHorizentalMatrix();
+    Matrix toHorizontalMatrix();
 
 }

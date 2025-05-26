@@ -9,5 +9,5 @@ public interface Scalar {
     Scalar clone();
     void add(Scalar other);
     void multiply(Scalar other);
-    int compareTo(Scalar other);
+    int compareTo(Scalar val);
 }
