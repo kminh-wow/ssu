@@ -10,6 +10,7 @@ public class Test2 {
         System.out.println("인자값: \"3.14\"");
         System.out.println("기댓값: " + expectedAnswer1);
         System.out.println(sA);
+        System.out.println(sA.equals(expectedAnswer1) ? "통과" : "실패");
         System.out.println("");
 
         // 2. 스칼라 생성 (int, int) 무작위
@@ -31,6 +32,7 @@ public class Test2 {
         System.out.println("인자값: n=4, val=2");
         System.out.println("기댓값: " + expectedAnswer3);
         System.out.println(vA);
+        System.out.println(vA.equals(expectedAnswer3) ? "통과" : "실패");
         System.out.println();
 
         // 4. 벡터 생성 (i, j, n) 무작위
@@ -57,6 +59,7 @@ public class Test2 {
         System.out.println("인자값: [1, 2, 3]");
         System.out.println("기댓값: " + expectedAnswer5);
         System.out.println(vC);
+        System.out.println(vC.equals(expectedAnswer5) ? "통과" : "실패");
         System.out.println();
 
         // 6. 행렬 생성 (m, n, val)
@@ -69,6 +72,7 @@ public class Test2 {
         System.out.println("인자값: m=2, n=3, val=7");
         System.out.println("기댓값: " + expectedAnswer6);
         System.out.println(mA);
+        System.out.println(mA.equals(expectedAnswer6) ? "통과" : "실패");
         System.out.println();
 
         // 7. 행렬 생성 (i, j, m, n) 무작위
@@ -96,6 +100,7 @@ public class Test2 {
         System.out.println("8. 행렬 생성 (배열)");
         System.out.println("기댓값: " + expectedAnswer8);
         System.out.println(mC);
+        System.out.println(mC.equals(expectedAnswer8) ? "통과" : "실패");
         System.out.println("");
 
         // 9. 행렬 생성 (csv 파일) - 파일이 없으므로 생략 또는 주석처리
@@ -112,6 +117,7 @@ public class Test2 {
         System.out.println("10. 단위행렬 생성");
         System.out.println("기댓값: " + expectedAnswer10);
         System.out.println(mD);
+        System.out.println(mD.equals(expectedAnswer10) ? "통과" : "실패");
         System.out.println("");
 
         // 11. 특정 위치의 요소를 지정/조회할 수 있다.
@@ -161,6 +167,7 @@ public class Test2 {
         System.out.println("벡터 크기: " + vA.size());
         System.out.println("행렬 행: " + mA.rowSize() + ", 열: " + mA.colSize());
         System.out.println("기댓값: 벡터 크기=4, 행렬 행=2, 열=3");
+        System.out.println((vA.size() == 4 && mA.rowSize() == 2 && mA.colSize() == 3) ? "통과" : "실패");
         System.out.println("");
 
         // 14. toString() 객체를 콘솔에 출력할 수 있다.
@@ -183,6 +190,7 @@ public class Test2 {
         System.out.println("벡터: " + vA);
         System.out.println("행렬: " + mA);
         System.out.println("기댓값: 스칼라=" + expectedAnswer14_1 + ", 벡터=" + expectedAnswer14_2 + ", 행렬=" + expectedAnswer14_3);
+        System.out.println((sA.equals(expectedAnswer14_1) && vA.equals(expectedAnswer14_2) && mA.equals(expectedAnswer14_3)) ? "통과" : "실패");
         System.out.println("");
 
         // 15. equals() 객체의 동등성 판단
@@ -196,7 +204,7 @@ public class Test2 {
             //throw new TensorException("비교할 수 없는 null 값이 있습니다.");
         }
         System.out.println("기댓값: " + expectedAnswer15);
-        System.out.println("결과: " + (sA.equals(s2) ? "같아용" : "달라용"));
+        System.out.println(sA.equals(expectedAnswer15) ? "통과" : "실패");
         System.out.println("");
 
         // 16. Comparable 스칼라 대소 비교
@@ -207,7 +215,7 @@ public class Test2 {
         System.out.println("비교 대상 1: " + sA);
         System.out.println("비교 대상 2: " + s3);
         System.out.println("기댓값: " + expectedAnswer16);
-        System.out.println("결과: " + "비교 대상 1"+sA+ "이 비교 대상 2"+s3+ "보다 " + (sA.compareTo(s3) > 0 ? "크다" : "작다"));
+        System.out.println(sA.compareTo(s3) < 0 ? "통과" : "실패");
         System.out.println("");
 
         // 17. clone() 객체 복제
@@ -444,7 +452,9 @@ public class Test2 {
         });
         System.out.println("30. toVerticalMatrix 벡터 세로로");
         System.out.println("기댓값: " + expectedAnswer30);
-        System.out.println(vA.toVerticalMatrix());
+        Matrix result30 = vA.toVerticalMatrix();
+        System.out.println(result30);
+        System.out.println(result30.equals(expectedAnswer30) ? "통과" : "실패");
         System.out.println("");
 
         // 31. 벡터 toHorizentalMatrix
@@ -455,7 +465,9 @@ public class Test2 {
         });
         System.out.println("31. 벡터 toHorizentalMatrix");
         System.out.println("기댓값: " + expectedAnswer31);
-        System.out.println(vA.toHorizentalMatrix());
+        Matrix result31 = vA.toHorizentalMatrix();
+        System.out.println(result31);
+        System.out.println(result31.equals(expectedAnswer31) ? "통과" : "실패");
         System.out.println("");
 
         // 32. attachHMatrix
@@ -471,6 +483,8 @@ public class Test2 {
         System.out.println("32. attachHMatrix (가로로 붙이기)");
         System.out.println("[행렬1]\n" + mA + "\n[행렬2]\n" + mB + "\n결과:\n" + Tensors.attachHMatrix(mA, mB));
         System.out.println("기댓값: " + expectedAnswer32);
+        Matrix result32 = Tensors.attachHMatrix(mA, mB);
+        System.out.println(result32.equals(expectedAnswer32) ? "통과" : "실패");
         System.out.println("");
 
         // 33. attachVMatrix
@@ -488,6 +502,8 @@ public class Test2 {
         System.out.println("33. attachVMatrix (세로로 붙이기)");
         System.out.println("[행렬1]\n" + mA + "\n[행렬2]\n" + mB + "\n결과:\n" + Tensors.attachVMatrix(mA, mB));
         System.out.println("기댓값: " + expectedAnswer33);
+        Matrix result33 = Tensors.attachVMatrix(mA, mB);
+        System.out.println(result33.equals(expectedAnswer33) ? "통과" : "실패");
         System.out.println("");
 
         // 34. 행 벡터 추출
