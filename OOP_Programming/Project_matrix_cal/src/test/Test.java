@@ -25,13 +25,18 @@ public class Test {
             System.out.println();
 
             // 3. 벡터 생성 (n, val)
-            Vector expectedAnswer3 = Factory.createVector(4, Factory.createScalar("2"));
             System.out.println("3. 벡터 생성 (n, val)");
             System.out.println("인자값: n=4, val=2");
-            System.out.println("기댓값: " + expectedAnswer3);
             Vector vA = Factory.createVector(4, Factory.createScalar("2"));
             System.out.println("결과: " + vA);
-            System.out.println(vA.equals(expectedAnswer3) ? "통과" : "실패");
+            boolean allEqual = true;
+            for (int i = 0; i < vA.size(); i++) {
+                if (!vA.getValue(i).getValue().equals("2")) {
+                    allEqual = false;
+                    break;
+                }
+            }
+            System.out.println(allEqual ? "통과" : "실패");
             System.out.println("");
 
             // 4. 벡터 생성 (i, j, n) 무작위
@@ -57,23 +62,36 @@ public class Test {
 
             // 5. 벡터 생성 (배열)
             Scalar[] arr = {Factory.createScalar("1"), Factory.createScalar("2"), Factory.createScalar("3")};
-            Vector expectedAnswer5 = Factory.createVector(arr);
             System.out.println("5. 벡터 생성 (배열)");
             System.out.println("인자값: [1, 2, 3]");
-            System.out.println("기댓값: " + expectedAnswer5);
             Vector vC = Factory.createVector(arr);
             System.out.println("결과: " + vC);
-            System.out.println(vC.equals(expectedAnswer5) ? "통과" : "실패");
+            boolean arrayEqual = true;
+            for (int i = 0; i < vC.size(); i++) {
+                if (!vC.getValue(i).getValue().equals(String.valueOf(i + 1))) {
+                    arrayEqual = false;
+                    break;
+                }
+            }
+            System.out.println(arrayEqual ? "통과" : "실패");
             System.out.println("");
 
             // 6. 행렬 생성 (m, n, val)
-            Matrix expectedAnswer6 = Factory.createMatrix(2, 3, Factory.createScalar("7"));
             System.out.println("6. 행렬 생성 (m, n, val)");
             System.out.println("인자값: m=2, n=3, val=7");
-            System.out.println("기댓값: " + expectedAnswer6);
             Matrix mA = Factory.createMatrix(2, 3, Factory.createScalar("7"));
             System.out.println("결과: " + mA);
-            System.out.println(mA.equals(expectedAnswer6) ? "통과" : "실패");
+            boolean matrixAllEqual = true;
+            for (int i = 0; i < mA.rowSize(); i++) {
+                for (int j = 0; j < mA.colSize(); j++) {
+                    if (!mA.getValue(i, j).getValue().equals("7")) {
+                        matrixAllEqual = false;
+                        break;
+                    }
+                }
+                if (!matrixAllEqual) break;
+            }
+            System.out.println(matrixAllEqual ? "통과" : "실패");
             System.out.println("");
 
             // 7. 행렬 생성 (i, j, m, n) 무작위
@@ -102,33 +120,95 @@ public class Test {
             System.out.println(allMatrixInRange ? "통과" : "실패");
             System.out.println();
 
-            // 8. 행렬 생성 (csv 파일) - 파일이 없으므로 생략 또는 주석처리 / csv 생성도 만들어야함
-            // System.out.println("8. 행렬 생성 (csv 파일)");
-            // System.out.println(Factory.createMatrix("matrix.csv"));
-            
+            // 8. 행렬 생성 (csv 파일)
+            try {
+                // CSV 파일 생성
+                java.io.FileWriter fw = new java.io.FileWriter("matrix.csv");
+                fw.write("1,2,3\n");
+                fw.write("4,5,6\n");
+                fw.write("7,8,9\n");
+                fw.close();
+
+                System.out.println("8. 행렬 생성 (csv 파일)");
+                System.out.println("CSV 파일 내용:");
+                System.out.println("1,2,3");
+                System.out.println("4,5,6");
+                System.out.println("7,8,9");
+                
+                Matrix mCsv = Factory.createMatrix("matrix.csv");
+                System.out.println("생성된 행렬:");
+                System.out.println(mCsv);
+                
+                // CSV 파일로부터 생성된 행렬 검증
+                boolean csvMatrixValid = true;
+                for (int i = 0; i < mCsv.rowSize(); i++) {
+                    for (int j = 0; j < mCsv.colSize(); j++) {
+                        String expected = String.valueOf(i * 3 + j + 1);
+                        if (!mCsv.getValue(i, j).getValue().equals(expected)) {
+                            csvMatrixValid = false;
+                            break;
+                        }
+                    }
+                    if (!csvMatrixValid) break;
+                }
+                System.out.println(csvMatrixValid ? "통과" : "실패");
+                
+                // CSV 파일 삭제
+                new java.io.File("matrix.csv").delete();
+            } catch (Exception e) {
+                System.out.println("CSV 파일 처리 중 예외 발생: " + e.getMessage());
+            }
+            System.out.println("");
+
             // 9. 행렬 생성 (배열)
             Scalar[][] arr2 = {
                 {Factory.createScalar("1"), Factory.createScalar("2")},
                 {Factory.createScalar("3"), Factory.createScalar("4")},
                 {Factory.createScalar("5"), Factory.createScalar("6")}
             };
-            Matrix expectedAnswer8 = Factory.createMatrix(arr2);
             System.out.println("9. 행렬 생성 (배열)");
-            System.out.println("인자값: " + expectedAnswer8);
+            System.out.println("인자값:");
+            for (Scalar[] row : arr2) {
+                System.out.print("[");
+                for (int i = 0; i < row.length; i++) {
+                    System.out.print(row[i].getValue());
+                    if (i < row.length - 1) System.out.print(", ");
+                }
+                System.out.println("]");
+            }
             Matrix mC = Factory.createMatrix(arr2);
             System.out.println("결과: " + mC);
-            System.out.println(mC.equals(expectedAnswer8) ? "통과" : "실패");
+            boolean arrayMatrixEqual = true;
+            for (int i = 0; i < mC.rowSize(); i++) {
+                for (int j = 0; j < mC.colSize(); j++) {
+                    if (!mC.getValue(i, j).getValue().equals(arr2[i][j].getValue())) {
+                        arrayMatrixEqual = false;
+                        break;
+                    }
+                }
+                if (!arrayMatrixEqual) break;
+            }
+            System.out.println(arrayMatrixEqual ? "통과" : "실패");
             System.out.println("");
 
             
             // 10. 단위행렬 생성
-            Matrix expectedAnswer10 = Factory.createIdentityMatrix(3);
             System.out.println("10. 단위행렬 생성");
             System.out.println("인자값: n=3");
-            System.out.println("기댓값: " + expectedAnswer10);
             Matrix mD = Factory.createIdentityMatrix(3);
             System.out.println("결과: " + mD);
-            System.out.println(mD.equals(expectedAnswer10) ? "통과" : "실패");
+            boolean isIdentity = true;
+            for (int i = 0; i < mD.rowSize(); i++) {
+                for (int j = 0; j < mD.colSize(); j++) {
+                    String expected = (i == j) ? "1" : "0";
+                    if (!mD.getValue(i, j).getValue().equals(expected)) {
+                        isIdentity = false;
+                        break;
+                    }
+                }
+                if (!isIdentity) break;
+            }
+            System.out.println(isIdentity ? "통과" : "실패");
             System.out.println("");
 
             // 11. 특정 위치의 요소를 지정/조회할 수 있다.
