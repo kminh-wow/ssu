@@ -68,4 +68,16 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
     public void multiply(Scalar other) {
         this.value = this.value.multiply(new java.math.BigDecimal(other.getValue()));
     }
+
+    public static Scalar add(Scalar s1, Scalar s2) {
+        java.math.BigDecimal v1 = new java.math.BigDecimal(s1.getValue());
+        java.math.BigDecimal v2 = new java.math.BigDecimal(s2.getValue());
+        return new ScalarImpl(v1.add(v2).toPlainString());
+    }
+
+    public static Scalar multiply(Scalar s1, Scalar s2) {
+        java.math.BigDecimal v1 = new java.math.BigDecimal(s1.getValue());
+        java.math.BigDecimal v2 = new java.math.BigDecimal(s2.getValue());
+        return new ScalarImpl(v1.multiply(v2).toPlainString());
+    }
 }

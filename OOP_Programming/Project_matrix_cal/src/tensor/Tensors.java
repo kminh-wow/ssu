@@ -67,10 +67,10 @@ public class Tensors {
         return Factory.createMatrix(result);
     }
     public static Matrix attachHMatrix(Matrix m1, Matrix m2) {
-        return Matrix.attachHMatrix(m1, m2);
+        return MatrixImpl.attachHMatrix(m1, m2);
     }
     public static Matrix attachVMatrix(Matrix m1, Matrix m2) {
-        return Matrix.attachVMatrix(m1, m2);
+        return MatrixImpl.attachVMatrix(m1, m2);
     }
     // 필요시 추가 연산도 여기에 래핑 가능
 }
