@@ -118,7 +118,7 @@ public class Test {
             System.out.println(mC.equals(expectedAnswer8) ? "통과" : "실패");
             System.out.println("");
 
-            // 9. 행렬 생성 (csv 파일) - 파일이 없으므로 생략 또는 주석처리
+            // 9. 행렬 생성 (csv 파일) - 파일이 없으므로 생략 또는 주석처리 / csv 생성도 만들어야함
             // System.out.println("9. 행렬 생성 (csv 파일)");
             // System.out.println(Factory.createMatrix("matrix.csv"));
             
@@ -493,37 +493,37 @@ public class Test {
             // 39. 대각합
             System.out.println("39. 대각합");
             System.out.println("원본 행렬:\n" + mA);
-            System.out.println("대각합: " + mA.trace(mA));
+            System.out.println("대각합: " + mA.trace());
             System.out.println("");
 
             // 40. 정사각 행렬 판별
             System.out.println("40. 정사각 행렬 판별");
             System.out.println("원본 행렬:\n" + mA);
-            System.out.println("정사각 행렬 여부: " + mA.isSquare(mA));
+            System.out.println("정사각 행렬 여부: " + mA.isSquare());
             System.out.println("");
 
             // 41. 상삼각행렬 판별
             System.out.println("41. 상삼각행렬 판별");
             System.out.println("원본 행렬:\n" + mA);
-            System.out.println("상삼각행렬 여부: " + mA.isUpperTriangular(mA));
+            System.out.println("상삼각행렬 여부: " + mA.isUpperTriangular());
             System.out.println("");
 
             // 42. 하삼각행렬 판별
             System.out.println("42. 하삼각행렬 판별");
             System.out.println("원본 행렬:\n" + mA);
-            System.out.println("하삼각행렬 여부: " + mA.isLowerTriangular(mA));
+            System.out.println("하삼각행렬 여부: " + mA.isLowerTriangular());
             System.out.println("");
 
             // 43. 단위행렬 판별
             System.out.println("43. 단위행렬 판별");
             System.out.println("원본 행렬:\n" + mA);
-            System.out.println("단위행렬 여부: " + mA.isIdentity(mA));
+            System.out.println("단위행렬 여부: " + mA.isIdentity());
             System.out.println("");
 
             // 44. 영행렬 판별
             System.out.println("44. 영행렬 판별");
             System.out.println("원본 행렬:\n" + mA);
-            System.out.println("영행렬 여부: " + mA.isZero(mA));
+            System.out.println("영행렬 여부: " + mA.isZero());
             System.out.println("");
 
             // 45. 행 교환
@@ -625,22 +625,21 @@ public class Test {
             // 51. RREF 변환
             System.out.println("51. RREF 변환");
             System.out.println("원본 행렬:\n" + mA);
-            System.out.println("RREF 변환 결과:\n" + mA.getRREF(mA));
+            System.out.println("RREF 변환 결과:\n" + mA.getRREF());
             System.out.println("");
 
             // 52. RREF 판별
             System.out.println("52. RREF 판별");
             System.out.println("원본 행렬:\n" + mA);
-            System.out.println("기댓값: null (RREF가 아님)");
-            Matrix result52 = mA.isRREF(mA);
-            System.out.println("RREF 여부: " + (result52 == null ? "RREF가 아님" : "RREF임"));
-            System.out.println(result52 == null ? "통과" : "실패");
+            boolean isRref = mA.isRREF();
+            System.out.println("RREF 여부: " + (isRref ? "RREF임" : "RREF가 아님"));
+            System.out.println(!isRref ? "통과" : "실패");
             System.out.println("");
 
             // 53. 행렬식 구하기
             try {
                 Scalar expectedAnswer53 = Factory.createScalar("-8");
-                double result53 = Double.parseDouble(mA.getDeterminant(mA).getValue());
+                double result53 = Double.parseDouble(mA.getDeterminant().getValue());
                 System.out.println("53. 행렬식 구하기");
                 System.out.println("원본 행렬:\n" + mA);
                 System.out.println("기댓값: " + expectedAnswer53);
@@ -660,7 +659,7 @@ public class Test {
                 System.out.println("54. 역행렬 구하기");
                 System.out.println("원본 행렬:\n" + mA);
                 System.out.println("기댓값: " + expectedAnswer54);
-                Matrix result54 = mA.getInverseMatrix(mA);
+                Matrix result54 = mA.getInverseMatrix();
                 System.out.println("역행렬:\n" + result54);
                 System.out.println(result54.equals(expectedAnswer54) ? "통과" : "실패");
             } catch (NotSquareMatrixException e) {
