@@ -103,7 +103,7 @@ class VectorImpl implements Vector {
     }
 
     @Override
-    public Matrix toHorizentalMatrix() { //31번
+    public Matrix toHorizontalMatrix() { //31번
         int n = this.size();
         Scalar[][] arr = new Scalar[1][n];
         for (int i = 0; i < n; i++) {

@@ -73,28 +73,19 @@ class MatrixImpl implements Matrix {
 
     @Override
     public Scalar getValue(int row, int col) {
-        if (row < 0 || row >= getRowCount() || col < 0 || col >= getColumnCount()) {
+        if (row < 0 || row >= rowSize() || col < 0 || col >= colSize()) {
             throw new IndexOutOfBoundsException("Matrix index out of bounds: (" + row + ", " + col + ")");
         }
         return elements.get(row).get(col).clone();
     }
     @Override
     public void setValue(int row, int col, Scalar val) {
-        if (row < 0 || row >= getRowCount() || col < 0 || col >= getColumnCount()) {
+        if (row < 0 || row >= rowSize() || col < 0 || col >= colSize()) {
             throw new IndexOutOfBoundsException("Matrix index out of bounds: (" + row + ", " + col + ")");
         }
         elements.get(row).set(col, val.clone());
     }
     //여기까지함
-    @Override
-    public int getRowCount() {//13번
-        return elements.size();
-    }
-    @Override
-    public int getColumnCount() {
-        if (elements.isEmpty()) return 0;
-        return elements.get(0).size();
-    }
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -135,11 +126,12 @@ class MatrixImpl implements Matrix {
 
     @Override
     public int rowSize() {
-        return getRowCount();
+        return elements.size();
     }
     @Override
     public int colSize() {
-        return getColumnCount();
+        if (elements.isEmpty()) return 0;
+        return elements.get(0).size();
     }
 
     @Override
@@ -255,13 +247,13 @@ class MatrixImpl implements Matrix {
     }
 
     @Override
-    public Matrix transposeMatrix(Matrix m) { //38번
-        int rows = m.rowSize();
-        int cols = m.colSize();
+    public Matrix transposeMatrix() { //38번
+        int rows = this.rowSize();
+        int cols = this.colSize();
         Scalar[][] arr = new Scalar[cols][rows];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                arr[j][i] = m.getValue(i, j).clone();
+                arr[j][i] = this.getValue(i, j).clone();
             }
         }
         return new MatrixImpl(arr);

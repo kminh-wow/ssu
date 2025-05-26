@@ -102,23 +102,24 @@ public class Test {
             System.out.println(allMatrixInRange ? "통과" : "실패");
             System.out.println();
 
-            // 8. 행렬 생성 (배열)
+            // 8. 행렬 생성 (csv 파일) - 파일이 없으므로 생략 또는 주석처리 / csv 생성도 만들어야함
+            // System.out.println("8. 행렬 생성 (csv 파일)");
+            // System.out.println(Factory.createMatrix("matrix.csv"));
+            
+            // 9. 행렬 생성 (배열)
             Scalar[][] arr2 = {
                 {Factory.createScalar("1"), Factory.createScalar("2")},
                 {Factory.createScalar("3"), Factory.createScalar("4")},
                 {Factory.createScalar("5"), Factory.createScalar("6")}
             };
             Matrix expectedAnswer8 = Factory.createMatrix(arr2);
-            System.out.println("8. 행렬 생성 (배열)");
+            System.out.println("9. 행렬 생성 (배열)");
             System.out.println("인자값: " + expectedAnswer8);
             Matrix mC = Factory.createMatrix(arr2);
             System.out.println("결과: " + mC);
             System.out.println(mC.equals(expectedAnswer8) ? "통과" : "실패");
             System.out.println("");
 
-            // 9. 행렬 생성 (csv 파일) - 파일이 없으므로 생략 또는 주석처리 / csv 생성도 만들어야함
-            // System.out.println("9. 행렬 생성 (csv 파일)");
-            // System.out.println(Factory.createMatrix("matrix.csv"));
             
             // 10. 단위행렬 생성
             Matrix expectedAnswer10 = Factory.createIdentityMatrix(3);
@@ -401,7 +402,7 @@ public class Test {
 
             // 31. 벡터 toHorizentalMatrix
             System.out.println("31. 벡터 toHorizentalMatrix");
-            System.out.println(vA.toHorizentalMatrix());
+            System.out.println(vA.toHorizontalMatrix());
             System.out.println("");
 
             // 32. attachHMatrix
@@ -483,7 +484,7 @@ public class Test {
             System.out.println("38. 전치행렬");
             System.out.println("원본 행렬:\n" + mA);
             System.out.println("기댓값:\n" + expectedAnswer38);
-            Matrix result38 = mA.transposeMatrix(mA);
+            Matrix result38 = mA.transposeMatrix();
             System.out.println("전치 결과:\n" + result38);
             System.out.println(result38.equals(expectedAnswer38) ? "통과" : "실패");
             System.out.println("");
