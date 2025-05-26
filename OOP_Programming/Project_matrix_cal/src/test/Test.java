@@ -6,13 +6,11 @@ public class Test {
     public static void main(String[] args) {
         try {
             // 1. 스칼라 생성 (String)
-            Scalar expectedAnswer1 = Factory.createScalar("3.14");
             System.out.println("1. 스칼라 생성 (String)");
             System.out.println("인자값: \"3.14\"");
-            System.out.println("기댓값: " + expectedAnswer1);
             Scalar sA = Factory.createScalar("3.14");
             System.out.println("결과: " + sA);
-            System.out.println(sA.equals(expectedAnswer1) ? "통과" : "실패");
+            System.out.println(sA.getValue().equals("3.14") ? "통과" : "실패");
             System.out.println("");
 
             // 2. 스칼라 생성 (int, int) 무작위

@@ -4,6 +4,8 @@ import java.util.*;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+
+
 class MatrixImpl implements Matrix {
     private List<List<Scalar>> elements;
 
@@ -708,7 +710,7 @@ class MatrixImpl implements Matrix {
         return new MatrixImpl(arr);
     }
 
-    public static Matrix attachHMatrix(Matrix m1, Matrix m2) { //32번
+    static Matrix attachHMatrix(Matrix m1, Matrix m2) { //32번
         if (m1.rowSize() != m2.rowSize()) {
             throw new IllegalArgumentException("행 개수가 다릅니다.");
         }
@@ -727,7 +729,7 @@ class MatrixImpl implements Matrix {
         return new MatrixImpl(arr);
     }
 
-    public static Matrix attachVMatrix(Matrix m1, Matrix m2) { //33번
+    static Matrix attachVMatrix(Matrix m1, Matrix m2) { //33번
         if (m1.colSize() != m2.colSize()) {
             throw new IllegalArgumentException("열 개수가 다릅니다.");
         }
