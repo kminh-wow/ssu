@@ -120,7 +120,7 @@ public class Test {
             System.out.println(allMatrixInRange ? "통과" : "실패");
             System.out.println();
 
-            // 8. 행렬 생성 (csv 파일)
+            // 8. 행렬 생성 (csv 파일) , 작업 디렉터리에 csv 파일 생성 후 통과 출력 후 csv파일 삭제
             try {
                 // CSV 파일 생성
                 java.io.FileWriter fw = new java.io.FileWriter("matrix.csv");
@@ -372,15 +372,16 @@ public class Test {
                 System.out.println("22. 행렬 덧셈");
                 System.out.println("[행렬1]\n" + mA + "\n+\n[행렬2]\n" + mF + "\n=\n");
                 System.out.println("기댓값: " + expectedAnswer22);
-                Matrix result22 = Tensors.add(mA, mF);
-                System.out.println("결과:\n" + result22);
-                System.out.println(result22.equals(expectedAnswer22) ? "통과" : "실패");
+                mA.add(mF);
+                System.out.println("결과:\n" + mA);
+                System.out.println(mA.equals(expectedAnswer22) ? "통과" : "실패");
             } catch (SizeMismatchException e) {
                 System.out.println("행렬 덧셈 예외 발생: " + e.getMessage());
             }
             System.out.println("");
 
             // 23. 행렬 곱셈
+            mA = Factory.createMatrix(2, 3, Factory.createScalar("7")); // mA 재초기화
             Matrix mE = Factory.createMatrix(new Scalar[][]{
                 {Factory.createScalar("1"), Factory.createScalar("2")},
                 {Factory.createScalar("3"), Factory.createScalar("4")},
