@@ -741,4 +741,13 @@ class MatrixImpl implements Matrix {
         }
         return new MatrixImpl(arr);
     }
+
+    @Override
+    public Matrix attachHMatrix(Matrix other) {
+        return attachHMatrix(this, other);
+    }
+    @Override
+    public Matrix attachVMatrix(Matrix other) {
+        return attachVMatrix(this, other);
+    }
 }
