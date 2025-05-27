@@ -154,7 +154,7 @@ class MatrixImpl implements Matrix {
         }
         for (int i = 0; i < this.rowSize(); i++) {
             for (int j = 0; j < this.colSize(); j++) {
-                this.getValue(i, j).add(other.getValue(i, j));
+                elements.get(i).get(j).add(other.getValue(i, j));
             }
         }
     }
