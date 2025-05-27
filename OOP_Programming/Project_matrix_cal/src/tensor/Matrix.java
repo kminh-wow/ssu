@@ -42,16 +42,7 @@ public interface Matrix {
     Scalar getDeterminant();//53번, 행렬식 구하기
     Matrix getInverseMatrix();//54번, 본인의 역행렬 리턴
 
-    // 32. 가로로 행렬 합치기
-    static Matrix attachHMatrix(Matrix m1, Matrix m2) {
-        return MatrixImpl.attachHMatrix(m1, m2);
-    }
     Matrix attachHMatrix(Matrix other);
-
-    // 33. 세로로 행렬 합치기
-    static Matrix attachVMatrix(Matrix m1, Matrix m2) {
-        return MatrixImpl.attachVMatrix(m1, m2);
-    }
     Matrix attachVMatrix(Matrix other);
 }
 

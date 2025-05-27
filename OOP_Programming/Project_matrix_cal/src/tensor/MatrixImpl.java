@@ -720,7 +720,7 @@ class MatrixImpl implements Matrix {
         }
         return new MatrixImpl(arr);
     }
-
+ 
     static Matrix attachVMatrix(Matrix m1, Matrix m2) { //33번
         if (m1.colSize() != m2.colSize()) {
             throw new IllegalArgumentException("열 개수가 다릅니다.");
@@ -741,7 +741,6 @@ class MatrixImpl implements Matrix {
         }
         return new MatrixImpl(arr);
     }
-
     @Override
     public Matrix attachHMatrix(Matrix other) {
         return attachHMatrix(this, other);
@@ -750,4 +749,6 @@ class MatrixImpl implements Matrix {
     public Matrix attachVMatrix(Matrix other) {
         return attachVMatrix(this, other);
     }
+
+    
 }
