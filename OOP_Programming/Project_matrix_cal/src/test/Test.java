@@ -295,13 +295,50 @@ public class Test {
 
             // 15. equals() 객체의 동등성 판단
             try {
+                // 스칼라 비교
                 Scalar s2 = Factory.createScalar("4.5");
-                System.out.println("15. equals() 객체의 동등성 판단");
+                System.out.println("15s. equals() 객체의 동등성 판단 (스칼라)");
                 System.out.println("비교 대상 1: " + sA);
                 System.out.println("비교 대상 2: " + s2);
-                System.out.println("결과: " + (sA.equals(s2) ? "비교대상 1과 비교대상 2는 같다. 통과" : "비교대상 1과 비교대상 2는 다르다. 실패"));
+                System.out.println("기댓값: 같다");
+                String scalarResult = sA.equals(s2) ? "같다" : "다르다";
+                System.out.println("결과: " + scalarResult);
+                System.out.println(scalarResult.equals("같다") ? "통과" : "실패");
+                System.out.println("");
+
+                // 벡터 비교
+                Vector v2 = Factory.createVector(new Scalar[]{
+                    Factory.createScalar("2"),
+                    Factory.createScalar("5"),
+                    Factory.createScalar("2"),
+                    Factory.createScalar("2")
+                });
+                System.out.println("15v. equals() 객체의 동등성 판단 (벡터)");
+                System.out.println("비교 대상 1: " + vA);
+                System.out.println("비교 대상 2: " + v2);
+                System.out.println("기댓값: 같다");
+                String vectorResult = vA.equals(v2) ? "같다" : "다르다";
+                System.out.println("결과: " + vectorResult);
+                System.out.println(vectorResult.equals("같다") ? "통과" : "실패");
+                System.out.println("");
+
+                // 행렬 비교
+                Matrix m2 = Factory.createMatrix(new Scalar[][]{
+                    {Factory.createScalar("7"), Factory.createScalar("7"), Factory.createScalar("7")},
+                    {Factory.createScalar("7"), Factory.createScalar("7"), Factory.createScalar("7")}
+                });
+                System.out.println("15m. equals() 객체의 동등성 판단 (행렬)");
+                System.out.println("비교 대상 1:\n" + mA);
+                System.out.println("비교 대상 2:\n" + m2);
+                System.out.println("기댓값: 같다");
+                String matrixResult = mA.equals(m2) ? "같다" : "다르다";
+                System.out.println("결과: " + matrixResult);
+                System.out.println(matrixResult.equals("같다") ? "통과" : "실패");
+                System.out.println("");
+
             } catch (tensor.TensorException e) {
                 System.out.println("예외 발생: " + e.getMessage());
+                System.out.println("실패");
             }
             System.out.println("");
         
