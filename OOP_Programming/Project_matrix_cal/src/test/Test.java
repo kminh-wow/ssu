@@ -29,14 +29,10 @@ public class Test {
             System.out.println("인자값: n=4, val=2");
             Vector vA = Factory.createVector(4, Factory.createScalar("2"));
             System.out.println("결과: " + vA);
-            boolean allEqual = true;
-            for (int i = 0; i < vA.size(); i++) {
-                if (!vA.getValue(i).getValue().equals("2")) {
-                    allEqual = false;
-                    break;
-                }
-            }
-            System.out.println(allEqual ? "통과" : "실패");
+            Vector expected3 = Factory.createVector(new Scalar[]{
+                Factory.createScalar("2"), Factory.createScalar("2"), Factory.createScalar("2"), Factory.createScalar("2")
+            });
+            System.out.println(vA.equals(expected3) ? "통과" : "실패");
             System.out.println("");
 
             // 4. 벡터 생성 (i, j, n) 무작위
@@ -49,15 +45,15 @@ public class Test {
             System.out.println("4. 벡터 생성 (i, j, n) 무작위");
             System.out.println("인자값: i=1, j=5 사이 무작위, n=4");
             System.out.println(vB);
-            boolean allInRange = true;
+            boolean inRange4 = true;
             for (int i = 0; i < vB.size(); i++) {
                 double val = Double.parseDouble(vB.getValue(i).getValue());
                 if (val < 1 || val > 5) {
-                    allInRange = false;
+                    inRange4 = false;
                     break;
                 }
             }
-            System.out.println(allInRange ? "통과" : "실패");
+            System.out.println(inRange4 ? "통과" : "실패");
             System.out.println();
 
             // 5. 벡터 생성 (배열)
@@ -66,14 +62,8 @@ public class Test {
             System.out.println("인자값: [1, 2, 3]");
             Vector vC = Factory.createVector(arr);
             System.out.println("결과: " + vC);
-            boolean arrayEqual = true;
-            for (int i = 0; i < vC.size(); i++) {
-                if (!vC.getValue(i).getValue().equals(String.valueOf(i + 1))) {
-                    arrayEqual = false;
-                    break;
-                }
-            }
-            System.out.println(arrayEqual ? "통과" : "실패");
+            Vector expected5 = Factory.createVector(arr);
+            System.out.println(vC.equals(expected5) ? "통과" : "실패");
             System.out.println("");
 
             // 6. 행렬 생성 (m, n, val)
@@ -81,17 +71,8 @@ public class Test {
             System.out.println("인자값: m=2, n=3, val=7");
             Matrix mA = Factory.createMatrix(2, 3, Factory.createScalar("7"));
             System.out.println("결과: " + mA);
-            boolean matrixAllEqual = true;
-            for (int i = 0; i < mA.rowSize(); i++) {
-                for (int j = 0; j < mA.colSize(); j++) {
-                    if (!mA.getValue(i, j).getValue().equals("7")) {
-                        matrixAllEqual = false;
-                        break;
-                    }
-                }
-                if (!matrixAllEqual) break;
-            }
-            System.out.println(matrixAllEqual ? "통과" : "실패");
+            Matrix expected6 = Factory.createMatrix(2, 3, Factory.createScalar("7"));
+            System.out.println(mA.equals(expected6) ? "통과" : "실패");
             System.out.println("");
 
             // 7. 행렬 생성 (i, j, m, n) 무작위
@@ -106,21 +87,21 @@ public class Test {
             System.out.println("7. 행렬 생성 (i, j, m, n) 무작위");
             System.out.println("인자값: i=1, j=5 사이 무작위, m=2, n=3");
             System.out.println(mB);
-            boolean allMatrixInRange = true;
+            boolean inRange7 = true;
             for (int i = 0; i < mB.rowSize(); i++) {
                 for (int j = 0; j < mB.colSize(); j++) {
                     double val = Double.parseDouble(mB.getValue(i, j).getValue());
                     if (val < 1 || val > 5) {
-                        allMatrixInRange = false;
+                        inRange7 = false;
                         break;
                     }
                 }
-                if (!allMatrixInRange) break;
+                if (!inRange7) break;
             }
-            System.out.println(allMatrixInRange ? "통과" : "실패");
+            System.out.println(inRange7 ? "통과" : "실패");
             System.out.println();
 
-            // 8. 행렬 생성 (csv 파일) , 작업 디렉터리에 csv 파일 생성 후 통과 출력 후 csv파일 삭제
+            // 8. 행렬 생성 (csv 파일)
             try {
                 // CSV 파일 생성
                 java.io.FileWriter fw = new java.io.FileWriter("matrix.csv");
@@ -138,20 +119,12 @@ public class Test {
                 Matrix mCsv = Factory.createMatrix("matrix.csv");
                 System.out.println("생성된 행렬:");
                 System.out.println(mCsv);
-                
-                // CSV 파일로부터 생성된 행렬 검증
-                boolean csvMatrixValid = true;
-                for (int i = 0; i < mCsv.rowSize(); i++) {
-                    for (int j = 0; j < mCsv.colSize(); j++) {
-                        String expected = String.valueOf(i * 3 + j + 1);
-                        if (!mCsv.getValue(i, j).getValue().equals(expected)) {
-                            csvMatrixValid = false;
-                            break;
-                        }
-                    }
-                    if (!csvMatrixValid) break;
-                }
-                System.out.println(csvMatrixValid ? "통과" : "실패");
+                Matrix expected8 = Factory.createMatrix(new Scalar[][]{
+                    {Factory.createScalar("1"), Factory.createScalar("2"), Factory.createScalar("3")},
+                    {Factory.createScalar("4"), Factory.createScalar("5"), Factory.createScalar("6")},
+                    {Factory.createScalar("7"), Factory.createScalar("8"), Factory.createScalar("9")}
+                });
+                System.out.println(mCsv.equals(expected8) ? "통과" : "실패");
                 
                 // CSV 파일 삭제
                 new java.io.File("matrix.csv").delete();
@@ -178,59 +151,43 @@ public class Test {
             }
             Matrix mC = Factory.createMatrix(arr2);
             System.out.println("결과: " + mC);
-            boolean arrayMatrixEqual = true;
-            for (int i = 0; i < mC.rowSize(); i++) {
-                for (int j = 0; j < mC.colSize(); j++) {
-                    if (!mC.getValue(i, j).getValue().equals(arr2[i][j].getValue())) {
-                        arrayMatrixEqual = false;
-                        break;
-                    }
-                }
-                if (!arrayMatrixEqual) break;
-            }
-            System.out.println(arrayMatrixEqual ? "통과" : "실패");
+            Matrix expected9 = Factory.createMatrix(arr2);
+            System.out.println(mC.equals(expected9) ? "통과" : "실패");
             System.out.println("");
 
-            
             // 10. 단위행렬 생성
             System.out.println("10. 단위행렬 생성");
             System.out.println("인자값: n=3");
             Matrix mD = Factory.createIdentityMatrix(3);
             System.out.println("결과: " + mD);
-            boolean isIdentity = true;
-            for (int i = 0; i < mD.rowSize(); i++) {
-                for (int j = 0; j < mD.colSize(); j++) {
-                    String expected = (i == j) ? "1" : "0";
-                    if (!mD.getValue(i, j).getValue().equals(expected)) {
-                        isIdentity = false;
-                        break;
-                    }
-                }
-                if (!isIdentity) break;
-            }
-            System.out.println(isIdentity ? "통과" : "실패");
+            Matrix expected10 = Factory.createMatrix(new Scalar[][]{
+                {Factory.createScalar("1"), Factory.createScalar("0"), Factory.createScalar("0")},
+                {Factory.createScalar("0"), Factory.createScalar("1"), Factory.createScalar("0")},
+                {Factory.createScalar("0"), Factory.createScalar("0"), Factory.createScalar("1")}
+            });
+            System.out.println(mD.equals(expected10) ? "통과" : "실패");
             System.out.println("");
 
-            // 11. 특정 위치의 요소를 지정/조회할 수 있다.
+            // 11v. 특정 위치의 요소를 지정/조회할 수 있다(벡터).
             vA.setValue(1, Factory.createScalar("5"));
             int idx11 = 1;
-            System.out.println("11. 특정 위치의 요소를 지정/조회할 수 있다.");
+            System.out.println("11v. 특정 위치의 요소를 지정/조회할 수 있다(벡터).");
             System.out.println("원본 벡터: " + vA);
-            System.out.println("조회 인덱스: " + (int)(idx11+1));
+            System.out.println("조회 인덱스: " + (idx11+1));
             System.out.println("결과: " + vA.getValue(idx11));
             System.out.println("");
 
-            // 11-1. 행렬의 특정 위치 요소 지정/조회
+            // 11m. 특정 위치의 요소를 지정/조회할 수 있다.(행렬)
             Matrix mTest = Factory.createMatrix(2, 2, Factory.createScalar("0"));
-            Scalar expectedValue = Factory.createScalar("7");
-            mTest.setValue(0, 1, expectedValue);
-            System.out.println("11-1. 행렬의 특정 위치 요소 지정/조회");
+            Scalar expectedAnswer11 = Factory.createScalar("7");
+            mTest.setValue(0, 1, expectedAnswer11);
+            System.out.println("11m. 특정 위치의 요소를 지정/조회할 수 있다.(행렬)");
             System.out.println("원본 행렬:\n" + mTest);
-            System.out.println("지정 위치: (0,1)");
-            System.out.println("지정 값: " + expectedValue);
+            System.out.println("지정 위치: (" + (0+1) + "," + (1+1) + ")");
+            System.out.println("지정 값: " + expectedAnswer11);
             Scalar result = mTest.getValue(0, 1);
             System.out.println("조회 결과: " + result);
-            System.out.println(result.equals(expectedValue) ? "통과" : "실패");
+            System.out.println(result.equals(expectedAnswer11) ? "통과" : "실패");
             System.out.println("");
 
             // 12. (only 스칼라) 값을 지정/조회할 수 있다.
@@ -241,31 +198,33 @@ public class Test {
             sA.setValue("4.5");
             System.out.println("기댓값: " + expectedAnswer12);
             System.out.println("조회 결과: " + sA.getValue());
-            System.out.println(sA.equals(expectedAnswer12) ? "통과" : "실패");
+            System.out.println(sA.equals(expectedAnswer12) ? "통과. 지정값과 조회 결과가 같습니다." : "실패. 지정값과 조회 결과가 다릅니다.");
             System.out.println("");
 
             // 13. (only 벡터, 행렬) 크기 정보를 조회할 수 있다.
             System.out.println("13. (only 벡터, 행렬) 크기 정보를 조회할 수 있다.");
             System.out.println("원본 벡터: " + vA);
             System.out.println("원본 행렬: \n" + mA);
-            System.out.println("벡터 크기: " + vA.size());
-            System.out.println("행렬 행: " + mA.rowSize() + ", 열: " + mA.colSize());
+            System.out.println("벡터 크기: " + vA.size() + "개");
+            System.out.println("행렬 크기 : " + mA.rowSize() +"행" + mA.colSize() + "열");
             System.out.println("");
 
             // 14. toString() 객체를 콘솔에 출력할 수 있다.
             System.out.println("14. toString() 객체를 콘솔에 출력할 수 있다.");
-            System.out.println("스칼라: " + sA);
-            System.out.println("벡터: " + vA);
-            System.out.println("행렬: " + mA);
+            System.out.println("스칼라: " + sA.toString());
+            System.out.println("벡터: " + vA.toString());
+            System.out.println("행렬: " + mA.toString());
             System.out.println("");
-            //String a = "a";
+            
+
+
             // 15. equals() 객체의 동등성 판단
             try {
                 Scalar s2 = Factory.createScalar("4.5");
                 System.out.println("15. equals() 객체의 동등성 판단");
                 System.out.println("비교 대상 1: " + sA);
                 System.out.println("비교 대상 2: " + s2);
-                System.out.println("결과: " + (sA.equals(s2) ? "같아용" : "달라용"));
+                System.out.println("결과: " + (sA.equals(s2) ? "비교대상 1과 비교대상 2는 같다." : "비교대상 1과 비교대상 2는 다르다."));
             } catch (tensor.TensorException e) {
                 System.out.println("예외 발생: " + e.getMessage());
             }
@@ -297,11 +256,11 @@ public class Test {
             Scalar sAdd = Factory.createScalar("2.5");
             Scalar expectedAnswer18 = Factory.createScalar("7.0");
             System.out.println("18. 스칼라 덧셈");
-            System.out.println("원본: " + sA);
-            System.out.println("더할 값: " + sAdd);
+            System.out.println("원본(sA): " + sA);
+            System.out.println("더할 값(sAdd): " + sAdd);
             System.out.println("기댓값: " + expectedAnswer18);
             sA.add(sAdd);
-            System.out.println("결과: " + sA);
+            System.out.println("결과(sA): " + sA);
             System.out.println(sA.equals(expectedAnswer18) ? "통과" : "실패");
             System.out.println("");
 
@@ -309,11 +268,11 @@ public class Test {
             Scalar sMul = Factory.createScalar("2");
             Scalar expectedAnswer19 = Factory.createScalar("14.0");
             System.out.println("19. 스칼라 곱셈");
-            System.out.println("원본: " + sA);
-            System.out.println("곱할 값: " + sMul);
+            System.out.println("원본(sA): " + sA);
+            System.out.println("곱할 값(sMul): " + sMul);
             System.out.println("기댓값: " + expectedAnswer19);
             sA.multiply(sMul);
-            System.out.println("결과: " + sA);
+            System.out.println("결과(sA): " + sA);
             System.out.println(sA.equals(expectedAnswer19) ? "통과" : "실패");
             System.out.println("");
 
@@ -332,11 +291,11 @@ public class Test {
                     Factory.createScalar("8")
                 });
                 System.out.println("20. 벡터 덧셈");
-                System.out.println("vA: " + vA);
-                System.out.println("vD: " + vD);
+                System.out.println("원본(vA): " + vA);
+                System.out.println("더할 값(vD): " + vD);
                 System.out.println("기댓값: " + expectedAnswer20);
                 vA.add(vD);
-                System.out.println("결과: " + vA);
+                System.out.println("결과(vA): " + vA);
                 System.out.println(vA.equals(expectedAnswer20) ? "통과" : "실패");
             } catch (SizeMismatchException e) {
                 System.out.println("벡터 덧셈 예외 발생: " + e.getMessage());
@@ -352,10 +311,10 @@ public class Test {
                 Factory.createScalar("24")
             });
             System.out.println("21. 벡터 스칼라 곱셈");
-            System.out.println(vA + " * " + mulS + " = ");
+            System.out.println("원본벡터(vA)" + vA + " * " + "곱할 스칼라(mulS)" + mulS + " = ");
             System.out.println("기댓값: " + expectedAnswer21);
             vA.multiply(mulS);
-            System.out.println("결과: " + vA);
+            System.out.println("결과(vA): " + vA);
             System.out.println(vA.equals(expectedAnswer21) ? "통과" : "실패");
             System.out.println("");
 
@@ -370,10 +329,10 @@ public class Test {
                     {Factory.createScalar("12"), Factory.createScalar("13"), Factory.createScalar("14")}
                 });
                 System.out.println("22. 행렬 덧셈");
-                System.out.println("[행렬1]\n" + mA + "\n+\n[행렬2]\n" + mF + "\n=\n");
+                System.out.println("[행렬1](mA)\n" + mA + "\n+\n[행렬2](mF)\n" + mF + "\n=\n");
                 System.out.println("기댓값: " + expectedAnswer22);
                 mA.add(mF);
-                System.out.println("결과:\n" + mA);
+                System.out.println("결과(mA):\n" + mA);
                 System.out.println(mA.equals(expectedAnswer22) ? "통과" : "실패");
             } catch (SizeMismatchException e) {
                 System.out.println("행렬 덧셈 예외 발생: " + e.getMessage());
@@ -381,7 +340,6 @@ public class Test {
             System.out.println("");
 
             // 23. 행렬 곱셈
-            mA = Factory.createMatrix(2, 3, Factory.createScalar("7")); // mA 재초기화
             Matrix mE = Factory.createMatrix(new Scalar[][]{
                 {Factory.createScalar("1"), Factory.createScalar("2")},
                 {Factory.createScalar("3"), Factory.createScalar("4")},
@@ -392,10 +350,10 @@ public class Test {
                 {Factory.createScalar("63"), Factory.createScalar("84")}
             });
             System.out.println("23. 행렬 곱셈");
-            System.out.println("[행렬1]\n" + mA + "\n*\n[행렬2]\n" + mE + "\n=\n");
+            System.out.println("[행렬1](mA)\n" + mA + "\n*\n[행렬2](mE)\n" + mE + "\n=\n");
             System.out.println("기댓값:\n" + expectedAnswer23);
             mA.multiply(mE);
-            System.out.println("결과:\n" + mA);
+            System.out.println("결과(mA):\n" + mA);
             System.out.println(mA.equals(expectedAnswer23) ? "통과" : "실패");
             System.out.println("");
 
