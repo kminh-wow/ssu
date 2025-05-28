@@ -60,8 +60,15 @@ class VectorImpl implements Vector {
         if (!(obj instanceof Vector)) return false;
         Vector other = (Vector) obj;
         if (this.size() != other.size()) return false;
+        
+        // 소수점 6자리까지 비교
+        BigDecimal epsilon = new BigDecimal("0.000001");
         for (int i = 0; i < this.size(); i++) {
-            if (!this.getValue(i).equals(other.getValue(i))) return false;
+            BigDecimal val1 = new BigDecimal(this.getValue(i).getValue());
+            BigDecimal val2 = new BigDecimal(other.getValue(i).getValue());
+            if (val1.subtract(val2).abs().compareTo(epsilon) > 0) {
+                return false;
+            }
         }
         return true;
     }

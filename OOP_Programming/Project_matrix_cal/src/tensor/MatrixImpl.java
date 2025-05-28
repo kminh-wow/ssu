@@ -340,7 +340,7 @@ class MatrixImpl implements Matrix {
         return true;
     }
 
-    @Override
+    @Override//53번
     public Scalar getDeterminant() {
         if (rowSize() != colSize()) {
             throw new IllegalArgumentException("정사각 행렬만 행렬식을 구할 수 있습니다.");
@@ -381,7 +381,7 @@ class MatrixImpl implements Matrix {
         return determinant;
     }
 
-    @Override
+    @Override//54번
     public Matrix getInverseMatrix() {
         int n = rowSize();
         if (n != colSize()) throw new IllegalArgumentException("정사각 행렬만 역행렬을 구할 수 있습니다.");
@@ -702,44 +702,47 @@ class MatrixImpl implements Matrix {
         return new MatrixImpl(arr);
     }
 
-    static Matrix attachHMatrix(Matrix m1, Matrix m2) { //32번
+    // 32. 가로로 행렬 합치기 (static 메서드에 실제 구현)
+    static Matrix attachHMatrix(Matrix m1, Matrix m2) {
         if (m1.rowSize() != m2.rowSize()) {
-            throw new IllegalArgumentException("행 개수가 다릅니다.");
+            throw new SizeMismatchException("두 행렬의 행수가 같지 않습니다.");
         }
-        int rows = m1.rowSize();
-        int cols1 = m1.colSize();
-        int cols2 = m2.colSize();
-        Scalar[][] arr = new Scalar[rows][cols1 + cols2];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols1; j++) {
-                arr[i][j] = m1.getValue(i, j).clone();
+        int newRows = m1.rowSize();
+        int newCols = m1.colSize() + m2.colSize();
+        Scalar[][] newElements = new Scalar[newRows][newCols];
+        for (int i = 0; i < newRows; i++) {
+            for (int j = 0; j < m1.colSize(); j++) {
+                Scalar currentScalar = m1.getValue(i, j);
+                newElements[i][j] = (currentScalar != null) ? currentScalar.clone() : null;
             }
-            for (int j = 0; j < cols2; j++) {
-                arr[i][cols1 + j] = m2.getValue(i, j).clone();
+            for (int j = 0; j < m2.colSize(); j++) {
+                Scalar otherScalar = m2.getValue(i, j);
+                newElements[i][m1.colSize() + j] = (otherScalar != null) ? otherScalar.clone() : null;
             }
         }
-        return new MatrixImpl(arr);
+        return new MatrixImpl(newElements);
     }
- 
-    static Matrix attachVMatrix(Matrix m1, Matrix m2) { //33번
+    // 33. 세로로 행렬 합치기 (static 메서드에 실제 구현)
+    static Matrix attachVMatrix(Matrix m1, Matrix m2) {
         if (m1.colSize() != m2.colSize()) {
-            throw new IllegalArgumentException("열 개수가 다릅니다.");
+            throw new SizeMismatchException("두 행렬의 열수가 같지 않습니다.");
         }
-        int rows1 = m1.rowSize();
-        int rows2 = m2.rowSize();
-        int cols = m1.colSize();
-        Scalar[][] arr = new Scalar[rows1 + rows2][cols];
-        for (int i = 0; i < rows1; i++) {
-            for (int j = 0; j < cols; j++) {
-                arr[i][j] = m1.getValue(i, j).clone();
+        int newRows = m1.rowSize() + m2.rowSize();
+        int newCols = m1.colSize();
+        Scalar[][] newElements = new Scalar[newRows][newCols];
+        for (int i = 0; i < m1.rowSize(); i++) {
+            for (int j = 0; j < newCols; j++) {
+                Scalar currentScalar = m1.getValue(i, j);
+                newElements[i][j] = (currentScalar != null) ? currentScalar.clone() : null;
             }
         }
-        for (int i = 0; i < rows2; i++) {
-            for (int j = 0; j < cols; j++) {
-                arr[rows1 + i][j] = m2.getValue(i, j).clone();
+        for (int i = 0; i < m2.rowSize(); i++) {
+            for (int j = 0; j < newCols; j++) {
+                Scalar otherScalar = m2.getValue(i, j);
+                newElements[m1.rowSize() + i][j] = (otherScalar != null) ? otherScalar.clone() : null;
             }
         }
-        return new MatrixImpl(arr);
+        return new MatrixImpl(newElements);
     }
     @Override
     public Matrix attachHMatrix(Matrix other) {

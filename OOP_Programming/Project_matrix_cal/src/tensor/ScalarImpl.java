@@ -41,7 +41,12 @@ class ScalarImpl implements Scalar, Comparable<Scalar> {
         if (obj == null) return false;
         if (!(obj instanceof Scalar)) return false;
         Scalar other = (Scalar) obj;
-        return this.value.equals(new BigDecimal(other.getValue()));
+        
+        // 소수점 6자리까지 비교
+        BigDecimal epsilon = new BigDecimal("0.000001");
+        BigDecimal val1 = this.value;
+        BigDecimal val2 = new BigDecimal(other.getValue());
+        return val1.subtract(val2).abs().compareTo(epsilon) <= 0;
     }
 
     @Override
