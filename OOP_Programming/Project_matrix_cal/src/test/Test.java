@@ -347,46 +347,35 @@ public class Test {
             System.out.println("16. Comparable 스칼라 대소 비교");
             System.out.println("비교 대상 1: " + sA);
             System.out.println("비교 대상 2: " + s3);
-            System.out.println("결과: " + sA + "은(는) " + s3 + "보다 " + (sA.compareTo(s3) > 0 ? "크다. 통과" : "작다. 실패"));
+            System.out.println("결과: 비교대상1 " + sA + "은(는) 비교대상2 " + s3 + "보다 " + (sA.compareTo(s3) > 0 ? "크다. 실패" : "작다. 통과과"));
             System.out.println("");
 
             // 17. clone() 객체 복제
             // 스칼라 복제
-            Scalar expectedScalar17 = Factory.createScalar("4.5");
             Scalar clonedScalar = sA.clone();
             System.out.println("17s. clone() 객체 복제 (스칼라)");
             System.out.println("원본 스칼라: " + sA);
             System.out.println("복제된 스칼라: " + clonedScalar);
-            System.out.println("기댓값: " + expectedScalar17);
-            System.out.println(clonedScalar.equals(expectedScalar17) ? "복제된 스칼라는 원본 스칼라와 같습니다. 통과" : "복제된 스칼라는 원본 스칼라와 다릅니다. 실패");
+            System.out.println("기댓값: " + sA);
+            System.out.println(clonedScalar.equals(sA) ? "복제된 스칼라는 원본 스칼라와 같습니다. 통과" : "복제된 스칼라는 원본 스칼라와 다릅니다. 실패");
             System.out.println("");
 
             // 벡터 복제
-            Vector expectedVector17 = Factory.createVector(new Scalar[]{
-                Factory.createScalar("2"),
-                Factory.createScalar("5"),
-                Factory.createScalar("2"),
-                Factory.createScalar("2")
-            });
             Vector clonedVector = vA.clone();
             System.out.println("17v. clone() 객체 복제 (벡터)");
             System.out.println("원본 벡터: " + vA);
             System.out.println("복제된 벡터: " + clonedVector);
-            System.out.println("기댓값: " + expectedVector17);
-            System.out.println(clonedVector.equals(expectedVector17) ? "복제된 벡터는 원본 벡터와 같습니다. 통과" : "복제된 벡터는 원본 벡터와 다릅니다. 실패");
+            System.out.println("기댓값: " + vA);
+            System.out.println(clonedVector.equals(vA) ? "복제된 벡터는 원본 벡터와 같습니다. 통과" : "복제된 벡터는 원본 벡터와 다릅니다. 실패");
             System.out.println("");
 
             // 행렬 복제
-            Matrix expectedMatrix17 = Factory.createMatrix(new Scalar[][]{
-                {Factory.createScalar("7"), Factory.createScalar("7"), Factory.createScalar("7")},
-                {Factory.createScalar("7"), Factory.createScalar("7"), Factory.createScalar("7")}
-            });
             Matrix clonedMatrix = mA.clone();
             System.out.println("17m. clone() 객체 복제 (행렬)");
             System.out.println("원본 행렬:\n" + mA);
             System.out.println("복제된 행렬:\n" + clonedMatrix);
-            System.out.println("기댓값:\n" + expectedMatrix17);
-            System.out.println(clonedMatrix.equals(expectedMatrix17) ? "복제된 행렬은 원본 행렬과 같습니다. 통과" : "복제된 행렬은 원본 행렬과 다릅니다. 실패");
+            System.out.println("기댓값:\n" + mA);
+            System.out.println(clonedMatrix.equals(mA) ? "복제된 행렬은 원본 행렬과 같습니다. 통과" : "복제된 행렬은 원본 행렬과 다릅니다. 실패");
             System.out.println("");
 
             // 18. 스칼라 덧셈
@@ -914,12 +903,12 @@ public class Test {
             // 53. 행렬식 구하기
             try {
                 Scalar expectedAnswer53 = Factory.createScalar("-8");
-                double result53 = Double.parseDouble(mA.getDeterminant().getValue());
                 System.out.println("53. 행렬식 구하기");
                 System.out.println("원본 행렬:\n" + mA);
                 System.out.println("기댓값: " + expectedAnswer53);
+                Scalar result53 = mA.getDeterminant();
                 System.out.println("행렬식: " + result53);
-                System.out.println(result53 == Double.parseDouble(expectedAnswer53.getValue()) ? "통과" : "실패");
+                System.out.println(result53.equals(expectedAnswer53) ? "통과" : "실패");
             } catch (NotSquareMatrixException e) {
                 System.out.println("행렬식 계산 예외 발생: " + e.getMessage());
             }
