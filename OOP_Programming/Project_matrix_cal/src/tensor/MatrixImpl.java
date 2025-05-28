@@ -702,55 +702,59 @@ class MatrixImpl implements Matrix {
         return new MatrixImpl(arr);
     }
 
-    // 32. 가로로 행렬 합치기 (static 메서드에 실제 구현)
-    static Matrix attachHMatrix(Matrix m1, Matrix m2) {
-        if (m1.rowSize() != m2.rowSize()) {
-            throw new SizeMismatchException("두 행렬의 행수가 같지 않습니다.");
-        }
-        int newRows = m1.rowSize();
-        int newCols = m1.colSize() + m2.colSize();
-        Scalar[][] newElements = new Scalar[newRows][newCols];
-        for (int i = 0; i < newRows; i++) {
-            for (int j = 0; j < m1.colSize(); j++) {
-                Scalar currentScalar = m1.getValue(i, j);
-                newElements[i][j] = (currentScalar != null) ? currentScalar.clone() : null;
-            }
-            for (int j = 0; j < m2.colSize(); j++) {
-                Scalar otherScalar = m2.getValue(i, j);
-                newElements[i][m1.colSize() + j] = (otherScalar != null) ? otherScalar.clone() : null;
-            }
-        }
-        return new MatrixImpl(newElements);
-    }
-    // 33. 세로로 행렬 합치기 (static 메서드에 실제 구현)
-    static Matrix attachVMatrix(Matrix m1, Matrix m2) {
-        if (m1.colSize() != m2.colSize()) {
-            throw new SizeMismatchException("두 행렬의 열수가 같지 않습니다.");
-        }
-        int newRows = m1.rowSize() + m2.rowSize();
-        int newCols = m1.colSize();
-        Scalar[][] newElements = new Scalar[newRows][newCols];
-        for (int i = 0; i < m1.rowSize(); i++) {
-            for (int j = 0; j < newCols; j++) {
-                Scalar currentScalar = m1.getValue(i, j);
-                newElements[i][j] = (currentScalar != null) ? currentScalar.clone() : null;
-            }
-        }
-        for (int i = 0; i < m2.rowSize(); i++) {
-            for (int j = 0; j < newCols; j++) {
-                Scalar otherScalar = m2.getValue(i, j);
-                newElements[m1.rowSize() + i][j] = (otherScalar != null) ? otherScalar.clone() : null;
-            }
-        }
-        return new MatrixImpl(newElements);
-    }
+    // 32. 가로로 행렬 합치기 (인스턴스 메서드에 실제 구현)
     @Override
     public Matrix attachHMatrix(Matrix other) {
-        return attachHMatrix(this, other);
+        if (this.rowSize() != other.rowSize()) {
+            throw new SizeMismatchException("두 행렬의 행수가 같지 않습니다.");
+        }
+        int newRows = this.rowSize();
+        int newCols = this.colSize() + other.colSize();
+        Scalar[][] newElements = new Scalar[newRows][newCols];
+        for (int i = 0; i < newRows; i++) {
+            for (int j = 0; j < this.colSize(); j++) {
+                Scalar currentScalar = this.getValue(i, j);
+                newElements[i][j] = (currentScalar != null) ? currentScalar.clone() : null;
+            }
+            for (int j = 0; j < other.colSize(); j++) {
+                Scalar otherScalar = other.getValue(i, j);
+                newElements[i][this.colSize() + j] = (otherScalar != null) ? otherScalar.clone() : null;
+            }
+        }
+        return new MatrixImpl(newElements);
     }
+
+    // 33. 세로로 행렬 합치기 (인스턴스 메서드에 실제 구현)
     @Override
     public Matrix attachVMatrix(Matrix other) {
-        return attachVMatrix(this, other);
+        if (this.colSize() != other.colSize()) {
+            throw new SizeMismatchException("두 행렬의 열수가 같지 않습니다.");
+        }
+        int newRows = this.rowSize() + other.rowSize();
+        int newCols = this.colSize();
+        Scalar[][] newElements = new Scalar[newRows][newCols];
+        for (int i = 0; i < this.rowSize(); i++) {
+            for (int j = 0; j < newCols; j++) {
+                Scalar currentScalar = this.getValue(i, j);
+                newElements[i][j] = (currentScalar != null) ? currentScalar.clone() : null;
+            }
+        }
+        for (int i = 0; i < other.rowSize(); i++) {
+            for (int j = 0; j < newCols; j++) {
+                Scalar otherScalar = other.getValue(i, j);
+                newElements[this.rowSize() + i][j] = (otherScalar != null) ? otherScalar.clone() : null;
+            }
+        }
+        return new MatrixImpl(newElements);
+    }
+
+    // Static wrapper 메소드들 (인스턴스 메소드 호출)
+    static Matrix attachHMatrix(Matrix m1, Matrix m2) {
+        return m1.attachHMatrix(m2);
+    }
+
+    static Matrix attachVMatrix(Matrix m1, Matrix m2) {
+        return m1.attachVMatrix(m2);
     }
 
     
