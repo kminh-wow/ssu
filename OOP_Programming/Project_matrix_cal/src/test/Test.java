@@ -105,16 +105,16 @@ public class Test {
             try {
                 // CSV 파일 생성
                 java.io.FileWriter fw = new java.io.FileWriter("matrix.csv");
-                fw.write("1,2,3\n");
-                fw.write("4,5,6\n");
-                fw.write("7,8,9\n");
+                fw.write("1, 2, 3\n");
+                fw.write("4, 5, 6\n");
+                fw.write("7, 8, 9\n");
                 fw.close();
 
                 System.out.println("8. 행렬 생성 (csv 파일)");
                 System.out.println("CSV 파일 내용:");
-                System.out.println("1,2,3");
-                System.out.println("4,5,6");
-                System.out.println("7,8,9");
+                System.out.println("1, 2, 3");
+                System.out.println("4, 5, 6");
+                System.out.println("7, 8, 9");
                 
                 Matrix mCsv = Factory.createMatrix("matrix.csv");
                 System.out.println("생성된 행렬:");
@@ -346,15 +346,16 @@ public class Test {
                 {Factory.createScalar("5"), Factory.createScalar("6")}
             });
             Matrix expectedAnswer23 = Factory.createMatrix(new Scalar[][]{
-                {Factory.createScalar("63"), Factory.createScalar("84")},
-                {Factory.createScalar("63"), Factory.createScalar("84")}
+                {Factory.createScalar("94"), Factory.createScalar("124")},
+                {Factory.createScalar("121"), Factory.createScalar("160")}
             });
             System.out.println("23. 행렬 곱셈");
             System.out.println("[행렬1](mA)\n" + mA + "\n*\n[행렬2](mE)\n" + mE + "\n=\n");
             System.out.println("기댓값:\n" + expectedAnswer23);
-            mA.multiply(mE);
-            System.out.println("결과(mA):\n" + mA);
-            System.out.println(mA.equals(expectedAnswer23) ? "통과" : "실패");
+            Matrix result23 = mA.clone();
+            result23.multiply(mE);
+            System.out.println("결과:\n" + result23);
+            System.out.println(result23.equals(expectedAnswer23) ? "통과" : "실패");
             System.out.println("");
 
             // 24. static 스칼라 덧셈
