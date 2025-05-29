@@ -797,7 +797,7 @@ public class Test {
             });
             System.out.println("45. 행 교환");
             System.out.println("원본 행렬:\n" + mA);
-            System.out.println("교환할 행: 0행과 1행");
+            System.out.println("교환할 행: 1행과 2행");
             System.out.println("기댓값:\n" + expectedAnswer45);
             mA.rowSwap(0, 1);
             System.out.println("결과:\n" + mA);
@@ -811,7 +811,7 @@ public class Test {
             });
             System.out.println("46. 열 교환");
             System.out.println("원본 행렬:\n" + mA);
-            System.out.println("교환할 열: 0열과 1열");
+            System.out.println("교환할 열: 1열과 2열");
             System.out.println("기댓값:\n" + expectedAnswer46);
             mA.colSwap(0, 1);
             System.out.println("결과:\n" + mA);
@@ -825,9 +825,9 @@ public class Test {
             });
             System.out.println("47. 행 스칼라 곱");
             System.out.println("원본 행렬:\n" + mA);
-            System.out.println("곱할 행: 0행, 스칼라: 2");
+            System.out.println("곱할 행: 1행, 스칼라: 2");
             System.out.println("계산 과정:");
-            System.out.println("0행의 각 원소에 2를 곱합니다.");
+            System.out.println("1행의 각 원소에 2를 곱합니다.");
             System.out.println("(4,3) -> (8,6)");
             System.out.println("기댓값:\n" + expectedAnswer47);
             mA.rowMultiply(0, Factory.createScalar("2"));
@@ -842,9 +842,9 @@ public class Test {
             });
             System.out.println("48. 열 스칼라 곱");
             System.out.println("원본 행렬:\n" + mA);
-            System.out.println("곱할 열: 0열, 스칼라: 2");
+            System.out.println("곱할 열: 1열, 스칼라: 2");
             System.out.println("계산 과정:");
-            System.out.println("0열의 각 원소에 2를 곱합니다.");
+            System.out.println("1열의 각 원소에 2를 곱합니다.");
             System.out.println("(8,2) -> (16,4)");
             System.out.println("기댓값:\n" + expectedAnswer48);
             mA.colMultiply(0, Factory.createScalar("2"));
@@ -859,9 +859,9 @@ public class Test {
             });
             System.out.println("49. 행에 다른 행의 상수배 더하기");
             System.out.println("원본 행렬:\n" + mA);
-            System.out.println("대상 행: 0행, 더할 행: 1행, 스칼라: 2");
+            System.out.println("대상 행: 1행, 더할 행: 2행, 스칼라: 2");
             System.out.println("계산 과정:");
-            System.out.println("1행의 각 원소에 2를 곱한 후 0행에 더합니다.");
+            System.out.println("2행의 각 원소에 2를 곱한 후 1행에 더합니다.");
             System.out.println("(16,6) + 2*(4,1) = (24,8)");
             System.out.println("기댓값:\n" + expectedAnswer49);
             mA.rowAddOtherRow(0, 1, Factory.createScalar("2"));
@@ -876,9 +876,9 @@ public class Test {
             });
             System.out.println("50. 열에 다른 열의 상수배 더하기");
             System.out.println("원본 행렬:\n" + mA);    
-            System.out.println("대상 열: 0열, 더할 열: 1열, 스칼라: 2");
+            System.out.println("대상 열: 1열, 더할 열: 2열, 스칼라: 2");
             System.out.println("계산 과정:");
-            System.out.println("1열의 각 원소에 2를 곱한 후 0열에 더합니다.");
+            System.out.println("2열의 각 원소에 2를 곱한 후 1열에 더합니다.");
             System.out.println("(24,4) + 2*(8,1) = (40,6)");
             System.out.println("기댓값:\n" + expectedAnswer50);
             mA.colAddOtherCol(0, 1, Factory.createScalar("2"));
@@ -889,14 +889,19 @@ public class Test {
             // 51. RREF 변환
             System.out.println("51. RREF 변환");
             System.out.println("원본 행렬:\n" + mA);
-            System.out.println("RREF 변환 결과:\n" + mA.getRREF());
+            Matrix rrefResult = mA.getRREF();
+            System.out.println("RREF 변환 결과:\n" + rrefResult);
+            // RREF 결과가 실제로 RREF 형태인지 확인
+            boolean isValidRREF = rrefResult.isRREF();
+            System.out.println("변환된 행렬이 RREF인지 확인: " + (isValidRREF ? "RREF임" : "RREF가 아님"));
+            System.out.println(isValidRREF ? "통과" : "실패");
             System.out.println("");
 
             // 52. RREF 판별
             System.out.println("52. RREF 판별");
             System.out.println("원본 행렬:\n" + mA);
             boolean isRref = mA.isRREF();
-            System.out.println("RREF 여부: " + (isRref ? "RREF임" : "RREF가 아님"));
+            System.out.println("RREF 여부: \n" + mA +" 는" + (isRref ? "RREF임" : "RREF가 아님"));
             System.out.println(!isRref ? "통과" : "실패");
             System.out.println("");
 
@@ -905,7 +910,7 @@ public class Test {
                 Scalar expectedAnswer53 = Factory.createScalar("-8");
                 System.out.println("53. 행렬식 구하기");
                 System.out.println("원본 행렬:\n" + mA);
-                System.out.println("기댓값: " + expectedAnswer53);
+                System.out.println("기댓값: \n" + expectedAnswer53);
                 Scalar result53 = mA.getDeterminant();
                 System.out.println("행렬식: " + result53);
                 System.out.println(result53.equals(expectedAnswer53) ? "통과" : "실패");
