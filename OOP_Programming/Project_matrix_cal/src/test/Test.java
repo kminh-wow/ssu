@@ -6,7 +6,7 @@ public class Test {
         try {
 
             System.out.println("---------20221739 김민혁---------");
-            System.out.println("출력 예시");
+            System.out.println("출력 형식");
             System.out.println("스칼라 1 : 1\n벡터(원소가 모두 1이고, 개수가 3인 벡터 : [1,1,1] \n행렬(모든 원소가 1인 2x2 행렬) : \n[[1,1]\n[1,1]] <- 맨 처음과 뒤에 대괄호(벡터와 구분하기 위함)");
             System.out.println("--------------------------------");
             System.out.println("메서드 실행 시작");
@@ -799,6 +799,17 @@ public class Test {
             System.out.println("상삼각행렬 여부: " + mA.isUpperTriangular());
             System.out.println("통과기준: 상삼각행렬 판별이 기댓값과 일치");
             System.out.println(mA.isUpperTriangular() == expectedAnswer41 ? "통과" : "실패");
+
+            // 상삼각행렬 true 케이스
+            Matrix upperTriMatrix = Factory.createMatrix(new Scalar[][]{
+                {Factory.createScalar("1"), Factory.createScalar("2"), Factory.createScalar("3")},
+                {Factory.createScalar("0"), Factory.createScalar("4"), Factory.createScalar("5")},
+                {Factory.createScalar("0"), Factory.createScalar("0"), Factory.createScalar("6")}
+            });
+            System.out.println("\n상삼각행렬 예시:\n[" + upperTriMatrix + "]");
+            System.out.println("상삼각행렬 여부: " + upperTriMatrix.isUpperTriangular());
+            System.out.println("통과기준: 상삼각행렬 판별이 true");
+            System.out.println(upperTriMatrix.isUpperTriangular() ? "통과" : "실패");
             System.out.println("\n");
 
             // 42. 하삼각행렬 판별
@@ -809,6 +820,17 @@ public class Test {
             System.out.println("하삼각행렬 여부: " + mA.isLowerTriangular());
             System.out.println("통과기준: 하삼각행렬 판별이 기댓값과 일치");
             System.out.println(mA.isLowerTriangular() == expectedAnswer42 ? "통과" : "실패");
+
+            // 하삼각행렬 true 케이스
+            Matrix lowerTriMatrix = Factory.createMatrix(new Scalar[][]{
+                {Factory.createScalar("1"), Factory.createScalar("0"), Factory.createScalar("0")},
+                {Factory.createScalar("2"), Factory.createScalar("3"), Factory.createScalar("0")},
+                {Factory.createScalar("4"), Factory.createScalar("5"), Factory.createScalar("6")}
+            });
+            System.out.println("\n하삼각행렬 예시:\n[" + lowerTriMatrix + "]");
+            System.out.println("하삼각행렬 여부: " + lowerTriMatrix.isLowerTriangular());
+            System.out.println("통과기준: 하삼각행렬 판별이 true");
+            System.out.println(lowerTriMatrix.isLowerTriangular() ? "통과" : "실패");
             System.out.println("\n");
 
             // 43. 단위행렬 판별
@@ -819,6 +841,13 @@ public class Test {
             System.out.println("단위행렬 여부: " + mA.isIdentity());
             System.out.println("통과기준: 단위행렬 판별이 기댓값과 일치");
             System.out.println(mA.isIdentity() == expectedAnswer43 ? "통과" : "실패");
+
+            // 단위행렬 true 케이스
+            Matrix identityMatrix = Factory.createIdentityMatrix(3);  // Factory의 createIdentityMatrix 메서드 사용
+            System.out.println("\n단위행렬 예시:\n[" + identityMatrix + "]");
+            System.out.println("단위행렬 여부: " + identityMatrix.isIdentity());
+            System.out.println("통과기준: 단위행렬 판별이 true");
+            System.out.println(identityMatrix.isIdentity() ? "통과" : "실패");
             System.out.println("\n");
 
             // 44. 영행렬 판별
@@ -829,6 +858,17 @@ public class Test {
             System.out.println("영행렬 여부: " + mA.isZero());
             System.out.println("통과기준: 영행렬 판별이 기댓값과 일치");
             System.out.println(mA.isZero() == expectedAnswer44 ? "통과" : "실패");
+
+            // 영행렬 true 케이스
+            Matrix zeroMatrix = Factory.createMatrix(new Scalar[][]{
+                {Factory.createScalar("0"), Factory.createScalar("0"), Factory.createScalar("0")},
+                {Factory.createScalar("0"), Factory.createScalar("0"), Factory.createScalar("0")},
+                {Factory.createScalar("0"), Factory.createScalar("0"), Factory.createScalar("0")}
+            });
+            System.out.println("\n영행렬 예시:\n[" + zeroMatrix + "]");
+            System.out.println("영행렬 여부: " + zeroMatrix.isZero());
+            System.out.println("통과기준: 영행렬 판별이 true");
+            System.out.println(zeroMatrix.isZero() ? "통과" : "실패");
             System.out.println("\n");
 
             // 45. 행 교환
