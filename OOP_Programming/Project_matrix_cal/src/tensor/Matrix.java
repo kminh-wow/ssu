@@ -2,16 +2,18 @@ package tensor;
 
 public interface Matrix {
 
-    Scalar getValue(int row, int col);
-    void setValue(int row, int col, Scalar val);
-
-    int rowSize();//13번
-    int colSize();//13번번
-    String toString();//14번번
-    boolean equals(Object obj);
-    Matrix clone();
+    abstract void setValue(int row, int col, Scalar val);
+    abstract Scalar getValue(int row, int col);
+    
+    abstract int rowSize();//13번
+    abstract int colSize();//13번번
+    abstract String toString();//14번번
+    abstract boolean equals(Object obj);
+    abstract Matrix clone();
     void add(Matrix other);
     void multiply(Matrix other);
+    Matrix attachHMatrix(Matrix other);//32
+    Matrix attachVMatrix(Matrix other);//33
     Vector getRowVector(int row);//34
     Vector getColVector(int col);//35
     Matrix extractSubMatrix(int rowStart, int rowEnd, int colStart, int colEnd);//36
@@ -42,7 +44,6 @@ public interface Matrix {
     Scalar getDeterminant();//53번, 행렬식 구하기
     Matrix getInverseMatrix();//54번, 본인의 역행렬 리턴
 
-    Matrix attachHMatrix(Matrix other);
-    Matrix attachVMatrix(Matrix other);
+    
 }
 
