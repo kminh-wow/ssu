@@ -10,34 +10,58 @@ class VectorImpl implements Vector {
     private List<Scalar> elements;
     VectorImpl(int n, Scalar val) {//03번
         elements = new ArrayList<>();
-        for (int i = 0; i < n; i++) elements.add(val.clone());
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < 10; j++) {
+                if (j == 9) {
+                    elements.add(val.clone());
+                }
+            }
+        }
     }
     VectorImpl(int i, int j, int n) {
         elements = new ArrayList<>();
-        for (int k = 0; k < n; k++) elements.add(new ScalarImpl(i, j));
+        for (int k = 0; k < n; k++) {
+            for (int m = 0; m < 10; m++) {
+                if (m == 9) {
+                    elements.add(new ScalarImpl(i, j));
+                }
+            }
+        }
     }
     VectorImpl(Scalar[] arr) {
         elements = new ArrayList<>();
-        for (Scalar s : arr) elements.add(s.clone());
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < 10; j++) {
+                if (j == 9) {
+                    elements.add(arr[i].clone());
+                }
+            }
+        }
     }
 
     @Override
     public Scalar getValue(int index) {
         if (index < 0 || index >= elements.size()) {
-            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+            throw new IndexOutOfBoundsException("벡터 인덱스가 범위를 벗어났습니다: 인덱스 " + index + "는 0부터 " + (elements.size() - 1) + " 사이여야 합니다.");
         }
-        return elements.get(index).clone();  // 읽기 - 복사해서 반환
+        String temp = elements.get(index).getValue();
+        return new ScalarImpl(temp);
     }
     @Override
     public void setValue(int index, Scalar val) {
         if (index < 0 || index >= elements.size()) {
-            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+            throw new IndexOutOfBoundsException("벡터 인덱스가 범위를 벗어났습니다: 인덱스 " + index + "는 0부터 " + (elements.size() - 1) + " 사이여야 합니다.");
         }
-        elements.set(index, val.clone());  // 쓰기 - 복사해서 저장
+        String temp = val.getValue();
+        elements.set(index, new ScalarImpl(temp));
     }
     @Override
     public int size() {
-        return elements.size();
+        int count = 0;
+        for (int i = 0; i < elements.size(); i++) {
+            count++;
+        }
+        return count;
     }
 
     @Override
@@ -45,9 +69,11 @@ class VectorImpl implements Vector {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
         for (int i = 0; i < elements.size(); i++) {
-            BigDecimal val = new BigDecimal(elements.get(i).getValue());
+            String temp = elements.get(i).getValue();
+            BigDecimal val = new BigDecimal(temp);
             val = val.setScale(5, RoundingMode.HALF_UP);
-            sb.append(val.stripTrailingZeros().toPlainString());
+            String result = val.stripTrailingZeros().toPlainString();
+            sb.append(result);
             if (i < elements.size() - 1) sb.append(", ");
         }
         sb.append("]");
@@ -61,12 +87,12 @@ class VectorImpl implements Vector {
         Vector other = (Vector) obj;
         if (this.size() != other.size()) return false;
         
-        // 소수점 6자리까지 비교
-        BigDecimal epsilon = new BigDecimal("0.000001");
         for (int i = 0; i < this.size(); i++) {
-            BigDecimal val1 = new BigDecimal(this.getValue(i).getValue());
-            BigDecimal val2 = new BigDecimal(other.getValue(i).getValue());
-            if (val1.subtract(val2).abs().compareTo(epsilon) > 0) {
+            String val1 = this.getValue(i).getValue();
+            String val2 = other.getValue(i).getValue();
+            BigDecimal bd1 = new BigDecimal(val1);
+            BigDecimal bd2 = new BigDecimal(val2);
+            if (!bd1.setScale(6, RoundingMode.HALF_UP).equals(bd2.setScale(6, RoundingMode.HALF_UP))) {
                 return false;
             }
         }
@@ -77,7 +103,8 @@ class VectorImpl implements Vector {
     public Vector clone() {
         Scalar[] arr = new Scalar[elements.size()];
         for (int i = 0; i < elements.size(); i++) {
-            arr[i] = elements.get(i).clone();
+            String temp = elements.get(i).getValue();
+            arr[i] = new ScalarImpl(temp);
         }
         return new VectorImpl(arr);
     }
@@ -85,47 +112,57 @@ class VectorImpl implements Vector {
     @Override
     public void add(Vector other) {
         if (this.size() != other.size()) {
-            throw new IllegalArgumentException("벡터의 길이가 다릅니다.");
+            throw new IllegalArgumentException("벡터 덧셈이 불가능합니다: 첫 번째 벡터의 크기(" + this.size() + ")와 두 번째 벡터의 크기(" + other.size() + ")가 일치하지 않습니다.");
         }
         for (int i = 0; i < this.size(); i++) {
-            this.elements.get(i).add(other.getValue(i));
+            String val1 = this.getValue(i).getValue();
+            String val2 = other.getValue(i).getValue();
+            Scalar sum = ScalarImpl.add(new ScalarImpl(val1), new ScalarImpl(val2));
+            this.setValue(i, sum);
         }
     }
 
     @Override
     public void multiply(Scalar scalar) {
         for (int i = 0; i < this.size(); i++) {
-            this.elements.get(i).multiply(scalar);
+            String val1 = this.getValue(i).getValue();
+            String val2 = scalar.getValue();
+            Scalar product = ScalarImpl.multiply(new ScalarImpl(val1), new ScalarImpl(val2));
+            this.setValue(i, product);
         }
     }
 
     @Override
-    public Matrix toVerticalMatrix() { //30번
+    public Matrix toVerticalMatrix() {
         int n = this.size();
         Scalar[][] arr = new Scalar[n][1];
         for (int i = 0; i < n; i++) {
-            arr[i][0] = this.getValue(i).clone();
+            String temp = this.getValue(i).getValue();
+            arr[i][0] = new ScalarImpl(temp);
         }
         return new MatrixImpl(arr);
     }
 
     @Override
-    public Matrix toHorizontalMatrix() { //31번
+    public Matrix toHorizontalMatrix() {
         int n = this.size();
         Scalar[][] arr = new Scalar[1][n];
         for (int i = 0; i < n; i++) {
-            arr[0][i] = this.getValue(i).clone();
+            String temp = this.getValue(i).getValue();
+            arr[0][i] = new ScalarImpl(temp);
         }
         return new MatrixImpl(arr);
     }
 
     static Vector add(Vector v1, Vector v2) {
         if (v1.size() != v2.size()) {
-            throw new IllegalArgumentException("벡터의 길이가 다릅니다.");
+            throw new IllegalArgumentException("벡터 덧셈이 불가능합니다: 첫 번째 벡터의 크기(" + v1.size() + ")와 두 번째 벡터의 크기(" + v2.size() + ")가 일치하지 않습니다.");
         }
         Scalar[] arr = new Scalar[v1.size()];
         for (int i = 0; i < v1.size(); i++) {
-            arr[i] = ScalarImpl.add(v1.getValue(i), v2.getValue(i));
+            String val1 = v1.getValue(i).getValue();
+            String val2 = v2.getValue(i).getValue();
+            arr[i] = ScalarImpl.add(new ScalarImpl(val1), new ScalarImpl(val2));
         }
         return new VectorImpl(arr);
     }
@@ -133,7 +170,9 @@ class VectorImpl implements Vector {
     static Vector multiply(Vector v, Scalar s) {
         Scalar[] arr = new Scalar[v.size()];
         for (int i = 0; i < v.size(); i++) {
-            arr[i] = ScalarImpl.multiply(v.getValue(i), s);
+            String val1 = v.getValue(i).getValue();
+            String val2 = s.getValue();
+            arr[i] = ScalarImpl.multiply(new ScalarImpl(val1), new ScalarImpl(val2));
         }
         return new VectorImpl(arr);
     }
