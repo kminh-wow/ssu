@@ -8,8 +8,9 @@ import java.math.RoundingMode;
 class MatrixImpl implements Matrix {
     private List<List<Scalar>> elements;
 
+    // 6. 행렬 생성 (m, n, val)
     MatrixImpl(int m, int n, Scalar val) {
-        if (m <= 0 || n <= 0) throw new IllegalArgumentException("Invalid dimensions.");
+        if (m <= 0 || n <= 0) throw new IllegalArgumentException("크기가 0이하입니다.");
         elements = new ArrayList<>();
         for (int i = 0; i < m; i++) {
             for (int k = 0; k < 10; k++) {
@@ -24,8 +25,9 @@ class MatrixImpl implements Matrix {
             }
         }
     }
+    // 7. 행렬 생성 (i, j, m, n) 무작위
     MatrixImpl(int i, int j, int m, int n) {
-        if (i >= j || m <= 0 || n <= 0) throw new IllegalArgumentException("Invalid parameters.");
+        if (i >= j || m <= 0 || n <= 0) throw new IllegalArgumentException("파라미터가 잘못되었습니다.");
         elements = new ArrayList<>();
         for (int row = 0; row < m; row++) {
             for (int k = 0; k < 10; k++) {
@@ -40,6 +42,7 @@ class MatrixImpl implements Matrix {
         }
     }
     
+    // 8. 행렬 생성 (csv 파일)
     MatrixImpl(String csvPath) throws IOException {
         elements = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(csvPath));
@@ -65,6 +68,7 @@ class MatrixImpl implements Matrix {
 
 
 
+    // 9. 행렬 생성 (배열)
     MatrixImpl(Scalar[][] arr) {
         elements = new ArrayList<>();
         for (int i = 0; i < arr.length; i++) {
@@ -81,7 +85,8 @@ class MatrixImpl implements Matrix {
         }
     }
 
-    MatrixImpl(int n) {
+    // 10. 단위행렬 생성
+    MatrixImpl(int n) {//n=size
         elements = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             for (int k = 0; k < 10; k++) {
@@ -96,24 +101,48 @@ class MatrixImpl implements Matrix {
             }
         }
     }
+    
 
+    //11. 지정조회
     @Override
     public Scalar getValue(int row, int col) {
         if (row < 0 || row >= rowSize() || col < 0 || col >= colSize()) {
-            throw new IndexOutOfBoundsException("Matrix index out of bounds: (" + row + ", " + col + ")");
+            throw new IndexOutOfBoundsException("범위를 벗어났습니다.");
         }
         String temp = elements.get(row).get(col).getValue();
         return new ScalarImpl(temp);
     }
+    //11. 지정조회
     @Override
     public void setValue(int row, int col, Scalar val) {
         if (row < 0 || row >= rowSize() || col < 0 || col >= colSize()) {
-            throw new IndexOutOfBoundsException("Matrix index out of bounds: (" + row + ", " + col + ")");
+            throw new IndexOutOfBoundsException("범위를 벗어났습니다.");
         }
         String temp = val.getValue();
         elements.get(row).set(col, new ScalarImpl(temp));
     }
-    //여기까지함
+
+    // 13. 행렬 행 크기 반환
+    @Override
+    public int rowSize() {
+        int count = 0;
+        for (int i = 0; i < elements.size(); i++) {
+            count++;
+        }
+        return count;
+    }
+    // 13. 행렬 열 크기 반환
+    @Override
+    public int colSize() {
+        if (elements.isEmpty()) return 0;
+        int count = 0;
+        for (int i = 0; i < elements.get(0).size(); i++) {
+            count++;
+        }
+        return count;
+    }
+
+    // 14. toString() 객체를 콘솔에 출력할 수 있다.
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -137,6 +166,7 @@ class MatrixImpl implements Matrix {
         }
         return sb.toString();
     }
+    // 15. equals() 객체의 동등성 판단
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -158,24 +188,7 @@ class MatrixImpl implements Matrix {
         return true;
     }
 
-    @Override
-    public int rowSize() {
-        int count = 0;
-        for (int i = 0; i < elements.size(); i++) {
-            count++;
-        }
-        return count;
-    }
-    @Override
-    public int colSize() {
-        if (elements.isEmpty()) return 0;
-        int count = 0;
-        for (int i = 0; i < elements.get(0).size(); i++) {
-            count++;
-        }
-        return count;
-    }
-
+    // 17. clone() 객체 복제
     @Override
     public Matrix clone() {
         int rows = this.rowSize();
@@ -190,6 +203,7 @@ class MatrixImpl implements Matrix {
         return new MatrixImpl(arr);
     }
 
+    // 22. 행렬 덧셈
     @Override
     public void add(Matrix other) {
         if (this.rowSize() != other.rowSize() || this.colSize() != other.colSize()) {
@@ -205,6 +219,7 @@ class MatrixImpl implements Matrix {
         }
     }
 
+    // 23. 행렬 곱셈
     @Override
     public void multiply(Matrix other) {
         if (this.colSize() != other.rowSize()) {
@@ -232,6 +247,109 @@ class MatrixImpl implements Matrix {
         this.elements = result;
     }
 
+    
+    // 28. static 행렬 덧셈
+    static Matrix add(Matrix m1, Matrix m2) {
+        if (m1.rowSize() != m2.rowSize() || m1.colSize() != m2.colSize()) {
+            throw new IllegalArgumentException("행렬의 크기가 다릅니다.");
+        }
+        int rows = m1.rowSize();
+        int cols = m1.colSize();
+        Scalar[][] arr = new Scalar[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                String val1 = m1.getValue(i, j).getValue();
+                String val2 = m2.getValue(i, j).getValue();
+                arr[i][j] = ScalarImpl.add(new ScalarImpl(val1), new ScalarImpl(val2));
+            }
+        }
+        return new MatrixImpl(arr);
+    }
+     // 29. static 행렬 곱셈
+     static Matrix multiply(Matrix m1, Matrix m2) {
+        if (m1.colSize() != m2.rowSize()) {
+            throw new IllegalArgumentException("행렬 곱셈이 불가능합니다.");
+        }
+        int m = m1.rowSize();
+        int n = m1.colSize();
+        int l = m2.colSize();
+        Scalar[][] arr = new Scalar[m][l];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < l; j++) {
+                BigDecimal sum = BigDecimal.ZERO;
+                for (int k = 0; k < n; k++) {
+                    String val1 = m1.getValue(i, k).getValue();
+                    String val2 = m2.getValue(k, j).getValue();
+                    BigDecimal a = new BigDecimal(val1);
+                    BigDecimal b = new BigDecimal(val2);
+                    sum = sum.add(a.multiply(b));
+                }
+                arr[i][j] = new ScalarImpl(sum.toPlainString());
+            }
+        }
+        return new MatrixImpl(arr);
+    }
+
+
+    // 32. 행렬 가로 결합
+    @Override
+    public Matrix attachHMatrix(Matrix other) {
+        if (this.rowSize() != other.rowSize()) {
+            throw new IllegalArgumentException("행렬의 행 수가 일치하지 않습니다.");
+        }
+        int rows = this.rowSize();
+        int cols1 = this.colSize();
+        int cols2 = other.colSize();
+        Scalar[][] arr = new Scalar[rows][cols1 + cols2];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols1; j++) {
+                String temp = this.getValue(i, j).getValue();
+                arr[i][j] = new ScalarImpl(temp);
+            }
+            for (int j = 0; j < cols2; j++) {
+                String temp = other.getValue(i, j).getValue();
+                arr[i][cols1 + j] = new ScalarImpl(temp);
+            }
+        }
+        return new MatrixImpl(arr);
+    }
+
+    // 32. static 행렬 가로 결합
+    static Matrix attachHMatrix(Matrix m1, Matrix m2) {
+        return m1.attachHMatrix(m2);
+    }
+
+    // 33. 행렬 세로 결합
+    @Override
+    public Matrix attachVMatrix(Matrix other) {
+        if (this.colSize() != other.colSize()) {
+            throw new IllegalArgumentException("행렬의 열 수가 일치하지 않습니다.");
+        }
+        int rows1 = this.rowSize();
+        int rows2 = other.rowSize();
+        int cols = this.colSize();
+        Scalar[][] arr = new Scalar[rows1 + rows2][cols];
+        for (int i = 0; i < rows1; i++) {
+            for (int j = 0; j < cols; j++) {
+                String temp = this.getValue(i, j).getValue();
+                arr[i][j] = new ScalarImpl(temp);
+            }
+        }
+        for (int i = 0; i < rows2; i++) {
+            for (int j = 0; j < cols; j++) {
+                String temp = other.getValue(i, j).getValue();
+                arr[rows1 + i][j] = new ScalarImpl(temp);
+            }
+        }
+        return new MatrixImpl(arr);
+    }
+
+    // 33. static 행렬 세로 결합
+    static Matrix attachVMatrix(Matrix m1, Matrix m2) {
+        return m1.attachVMatrix(m2);
+    }
+
+    // 34. 행벡터 추출
     @Override
     public Vector getRowVector(int row) {
         if (row < 0 || row >= this.rowSize()) {
@@ -244,20 +362,22 @@ class MatrixImpl implements Matrix {
         }
         return new VectorImpl(arr);
     }
-
+ 
+     // 35. 열 벡터 추출
     @Override
     public Vector getColVector(int col) {
         if (col < 0 || col >= this.colSize()) {
             throw new IndexOutOfBoundsException("열 인덱스가 범위를 벗어났습니다.");
         }
         Scalar[] arr = new Scalar[this.rowSize()];
-        for (int i = 0; i < this.rowSize(); i++) {
+       for (int i = 0; i < this.rowSize(); i++) {
             String temp = this.getValue(i, col).getValue();
             arr[i] = new ScalarImpl(temp);
-        }
+            }
         return new VectorImpl(arr);
     }
-
+ 
+     // 36. 부분 행렬 추출
     @Override
     public Matrix extractSubMatrix(int rowStart, int rowEnd, int colStart, int colEnd) {
         if (rowStart < 0 || rowEnd > this.rowSize() || colStart < 0 || colEnd > this.colSize() || rowStart >= rowEnd || colStart >= colEnd) {
@@ -273,7 +393,8 @@ class MatrixImpl implements Matrix {
         }
         return new MatrixImpl(arr);
     }
-
+ 
+     // 37. minor행렬 추출
     @Override
     public Matrix minorSubMatrix(int row, int col) {
         if (row < 0 || row >= this.rowSize() || col < 0 || col >= this.colSize()) {
@@ -296,6 +417,8 @@ class MatrixImpl implements Matrix {
         return new MatrixImpl(arr);
     }
 
+
+    // 38. 전치행렬
     @Override
     public Matrix transposeMatrix() {
         int rows = this.colSize();
@@ -310,10 +433,11 @@ class MatrixImpl implements Matrix {
         return new MatrixImpl(arr);
     }
 
+    // 39. 대각합
     @Override
     public Scalar trace() {
         if (!this.isSquare()) {
-            throw new IllegalArgumentException("대각합을 계산할 수 없습니다: 정방행렬이 아닙니다.");
+            throw new IllegalArgumentException("대각합을 계산할 수 없습니다 ; 정사각행렬이 아닙니다.");
         }
         BigDecimal sum = BigDecimal.ZERO;
         for (int i = 0; i < this.rowSize(); i++) {
@@ -323,11 +447,13 @@ class MatrixImpl implements Matrix {
         return new ScalarImpl(sum.toPlainString());
     }
 
+    // 40. 정사각 행렬 판별
     @Override
     public boolean isSquare() {
         return this.rowSize() == this.colSize();
     }
 
+    // 41. 상삼각행렬 판별
     @Override
     public boolean isUpperTriangular() {
         if (!this.isSquare()) return false;
@@ -342,6 +468,7 @@ class MatrixImpl implements Matrix {
         return true;
     }
 
+    // 42. 하삼각행렬 판별
     @Override
     public boolean isLowerTriangular() {
         if (!this.isSquare()) return false;
@@ -356,6 +483,7 @@ class MatrixImpl implements Matrix {
         return true;
     }
 
+    // 43. 단위행렬 판별
     @Override
     public boolean isIdentity() {
         if (!this.isSquare()) return false;
@@ -376,6 +504,7 @@ class MatrixImpl implements Matrix {
         return true;
     }
 
+    // 44. 영행렬 판별
     @Override
     public boolean isZero() {
         for (int i = 0; i < this.rowSize(); i++) {
@@ -389,70 +518,7 @@ class MatrixImpl implements Matrix {
         return true;
     }
 
-    @Override
-    public Scalar getDeterminant() {
-        if (!this.isSquare()) {
-            throw new IllegalArgumentException("행렬식을 계산할 수 없습니다: 정방행렬이 아닙니다.");
-        }
-        int n = this.rowSize();
-        if (n == 1) {
-            return this.getValue(0, 0);
-        }
-        if (n == 2) {
-            String a = this.getValue(0, 0).getValue();
-            String b = this.getValue(0, 1).getValue();
-            String c = this.getValue(1, 0).getValue();
-            String d = this.getValue(1, 1).getValue();
-            BigDecimal result = new BigDecimal(a).multiply(new BigDecimal(d))
-                .subtract(new BigDecimal(b).multiply(new BigDecimal(c)));
-            return new ScalarImpl(result.toPlainString());
-        }
-        BigDecimal det = BigDecimal.ZERO;
-        for (int j = 0; j < n; j++) {
-            String temp = this.getValue(0, j).getValue();
-            BigDecimal cofactor = new BigDecimal(temp);
-            if (j % 2 == 0) {
-                det = det.add(cofactor.multiply(new BigDecimal(this.minorSubMatrix(0, j).getDeterminant().getValue())));
-            } else {
-                det = det.subtract(cofactor.multiply(new BigDecimal(this.minorSubMatrix(0, j).getDeterminant().getValue())));
-            }
-        }
-        return new ScalarImpl(det.toPlainString());
-    }
-
-    @Override
-    public Matrix getInverseMatrix() {
-        if (!this.isSquare()) {
-            throw new IllegalArgumentException("역행렬을 계산할 수 없습니다: 정방행렬이 아닙니다.");
-        }
-        Scalar det = this.getDeterminant();
-        if (new BigDecimal(det.getValue()).equals(BigDecimal.ZERO)) {
-            throw new IllegalArgumentException("역행렬을 계산할 수 없습니다: 행렬식이 0입니다.");
-        }
-        int n = this.rowSize();
-        Scalar[][] adj = new Scalar[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                String temp = this.minorSubMatrix(i, j).getDeterminant().getValue();
-                BigDecimal cofactor = new BigDecimal(temp);
-                if ((i + j) % 2 != 0) {
-                    cofactor = cofactor.negate();
-                }
-                adj[j][i] = new ScalarImpl(cofactor.toPlainString());
-            }
-        }
-        Matrix adjMatrix = new MatrixImpl(adj);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                String val = adjMatrix.getValue(i, j).getValue();
-                String detVal = det.getValue();
-                BigDecimal result = new BigDecimal(val).divide(new BigDecimal(detVal), 10, RoundingMode.HALF_UP);
-                adjMatrix.setValue(i, j, new ScalarImpl(result.toPlainString()));
-            }
-        }
-        return adjMatrix;
-    }
-
+    // 45. 행 교환
     @Override
     public void rowSwap(int row1, int row2) {
         if (row1 < 0 || row1 >= this.rowSize() || row2 < 0 || row2 >= this.rowSize()) {
@@ -466,6 +532,7 @@ class MatrixImpl implements Matrix {
         }
     }
 
+    // 46. 열 교환
     @Override
     public void colSwap(int col1, int col2) {
         if (col1 < 0 || col1 >= this.colSize() || col2 < 0 || col2 >= this.colSize()) {
@@ -479,6 +546,7 @@ class MatrixImpl implements Matrix {
         }
     }
 
+    // 47. 행 스칼라 곱셈
     @Override
     public void rowMultiply(int index, Scalar val) {
         if (index < 0 || index >= this.rowSize()) {
@@ -492,6 +560,7 @@ class MatrixImpl implements Matrix {
         }
     }
 
+    // 48. 열 스칼라 곱셈
     @Override
     public void colMultiply(int index, Scalar val) {
         if (index < 0 || index >= this.colSize()) {
@@ -505,6 +574,7 @@ class MatrixImpl implements Matrix {
         }
     }
 
+    // 49. 행 덧셈
     @Override
     public void rowAddOtherRow(int targetRow, int sourceRow, Scalar val) {
         if (targetRow < 0 || targetRow >= this.rowSize() || sourceRow < 0 || sourceRow >= this.rowSize()) {
@@ -520,6 +590,7 @@ class MatrixImpl implements Matrix {
         }
     }
 
+    // 50. 열 덧셈
     @Override
     public void colAddOtherCol(int targetCol, int sourceCol, Scalar val) {
         if (targetCol < 0 || targetCol >= this.colSize() || sourceCol < 0 || sourceCol >= this.colSize()) {
@@ -535,6 +606,7 @@ class MatrixImpl implements Matrix {
         }
     }
 
+    // 51. RREF 구하기
     @Override
     public Matrix getRREF() {
         Matrix result = this.clone();
@@ -580,6 +652,7 @@ class MatrixImpl implements Matrix {
         return result;
     }
 
+    // 52. RREF 판별
     @Override
     public boolean isRREF() {
         int rows = this.rowSize();
@@ -605,99 +678,72 @@ class MatrixImpl implements Matrix {
         }
         return true;
     }
-
-    static Matrix add(Matrix m1, Matrix m2) {
-        if (m1.rowSize() != m2.rowSize() || m1.colSize() != m2.colSize()) {
-            throw new IllegalArgumentException("행렬의 크기가 다릅니다.");
+    
+    // 53. 행렬식 구하기
+    @Override
+    public Scalar getDeterminant() {
+        if (!this.isSquare()) {
+            throw new IllegalArgumentException("행렬식을 계산할 수 없습니다; 정사각행렬이 아닙니다.");
         }
-        int rows = m1.rowSize();
-        int cols = m1.colSize();
-        Scalar[][] arr = new Scalar[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                String val1 = m1.getValue(i, j).getValue();
-                String val2 = m2.getValue(i, j).getValue();
-                arr[i][j] = ScalarImpl.add(new ScalarImpl(val1), new ScalarImpl(val2));
+        int n = this.rowSize();
+        if (n == 1) {
+            return this.getValue(0, 0);
+        }
+        if (n == 2) {
+            String a = this.getValue(0, 0).getValue();
+            String b = this.getValue(0, 1).getValue();
+            String c = this.getValue(1, 0).getValue();
+            String d = this.getValue(1, 1).getValue();
+            BigDecimal result = new BigDecimal(a).multiply(new BigDecimal(d))
+                .subtract(new BigDecimal(b).multiply(new BigDecimal(c)));
+            return new ScalarImpl(result.toPlainString());
+        }
+        BigDecimal det = BigDecimal.ZERO;
+        for (int j = 0; j < n; j++) {
+            String temp = this.getValue(0, j).getValue();
+            BigDecimal cofactor = new BigDecimal(temp);
+            if (j % 2 == 0) {
+                det = det.add(cofactor.multiply(new BigDecimal(this.minorSubMatrix(0, j).getDeterminant().getValue())));
+            } else {
+                det = det.subtract(cofactor.multiply(new BigDecimal(this.minorSubMatrix(0, j).getDeterminant().getValue())));
             }
         }
-        return new MatrixImpl(arr);
+        return new ScalarImpl(det.toPlainString());
     }
-
-    static Matrix multiply(Matrix m1, Matrix m2) {
-        if (m1.colSize() != m2.rowSize()) {
-            throw new IllegalArgumentException("행렬 곱셈이 불가능합니다.");
+    
+    // 54. 역행렬 구하기
+    @Override
+    public Matrix getInverseMatrix() {
+        if (!this.isSquare()) {
+            throw new IllegalArgumentException("역행렬을 계산할 수 없습니다; 정사각행렬이 아닙니다.");
         }
-        int m = m1.rowSize();
-        int n = m1.colSize();
-        int l = m2.colSize();
-        Scalar[][] arr = new Scalar[m][l];
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < l; j++) {
-                BigDecimal sum = BigDecimal.ZERO;
-                for (int k = 0; k < n; k++) {
-                    String val1 = m1.getValue(i, k).getValue();
-                    String val2 = m2.getValue(k, j).getValue();
-                    BigDecimal a = new BigDecimal(val1);
-                    BigDecimal b = new BigDecimal(val2);
-                    sum = sum.add(a.multiply(b));
+        Scalar det = this.getDeterminant();
+        if (new BigDecimal(det.getValue()).equals(BigDecimal.ZERO)) {
+            throw new IllegalArgumentException("역행렬이 존재하지 않습니다; 행렬식이 0입니다.");
+        }
+        int n = this.rowSize();
+        Scalar[][] adj = new Scalar[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                String temp = this.minorSubMatrix(i, j).getDeterminant().getValue();
+                BigDecimal cofactor = new BigDecimal(temp);
+                if ((i + j) % 2 != 0) {
+                    cofactor = cofactor.negate();
                 }
-                arr[i][j] = new ScalarImpl(sum.toPlainString());
+                adj[j][i] = new ScalarImpl(cofactor.toPlainString());
             }
         }
-        return new MatrixImpl(arr);
+        Matrix adjMatrix = new MatrixImpl(adj);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                String val = adjMatrix.getValue(i, j).getValue();
+                String detVal = det.getValue();
+                BigDecimal result = new BigDecimal(val).divide(new BigDecimal(detVal), 10, RoundingMode.HALF_UP);
+                adjMatrix.setValue(i, j, new ScalarImpl(result.toPlainString()));
+            }
+        }
+        return adjMatrix;
     }
 
-    @Override
-    public Matrix attachHMatrix(Matrix other) {
-        if (this.rowSize() != other.rowSize()) {
-            throw new IllegalArgumentException("행렬의 행 수가 일치하지 않습니다.");
-        }
-        int rows = this.rowSize();
-        int cols1 = this.colSize();
-        int cols2 = other.colSize();
-        Scalar[][] arr = new Scalar[rows][cols1 + cols2];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols1; j++) {
-                String temp = this.getValue(i, j).getValue();
-                arr[i][j] = new ScalarImpl(temp);
-            }
-            for (int j = 0; j < cols2; j++) {
-                String temp = other.getValue(i, j).getValue();
-                arr[i][cols1 + j] = new ScalarImpl(temp);
-            }
-        }
-        return new MatrixImpl(arr);
-    }
 
-    @Override
-    public Matrix attachVMatrix(Matrix other) {
-        if (this.colSize() != other.colSize()) {
-            throw new IllegalArgumentException("행렬의 열 수가 일치하지 않습니다.");
-        }
-        int rows1 = this.rowSize();
-        int rows2 = other.rowSize();
-        int cols = this.colSize();
-        Scalar[][] arr = new Scalar[rows1 + rows2][cols];
-        for (int i = 0; i < rows1; i++) {
-            for (int j = 0; j < cols; j++) {
-                String temp = this.getValue(i, j).getValue();
-                arr[i][j] = new ScalarImpl(temp);
-            }
-        }
-        for (int i = 0; i < rows2; i++) {
-            for (int j = 0; j < cols; j++) {
-                String temp = other.getValue(i, j).getValue();
-                arr[rows1 + i][j] = new ScalarImpl(temp);
-            }
-        }
-        return new MatrixImpl(arr);
-    }
-
-    static Matrix attachHMatrix(Matrix m1, Matrix m2) {
-        return m1.attachHMatrix(m2);
-    }
-
-    static Matrix attachVMatrix(Matrix m1, Matrix m2) {
-        return m1.attachVMatrix(m2);
-    }
 }

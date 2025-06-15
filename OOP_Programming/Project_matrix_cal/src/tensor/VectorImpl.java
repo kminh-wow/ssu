@@ -8,7 +8,8 @@ import java.math.RoundingMode;
 
 class VectorImpl implements Vector {
     private List<Scalar> elements;
-    VectorImpl(int n, Scalar val) {//03번
+    //3 지정한 하나의 값을 모든 요소의 값으로 하는 n차원 벡터 생성
+    VectorImpl(int n, Scalar val) {
         elements = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < 10; j++) {
@@ -18,6 +19,7 @@ class VectorImpl implements Vector {
             }
         }
     }
+    //i이상 j미만 무작위 값을 요소로 하는 n차원 벡터 생성
     VectorImpl(int i, int j, int n) {
         elements = new ArrayList<>();
         for (int k = 0; k < n; k++) {
@@ -28,6 +30,7 @@ class VectorImpl implements Vector {
             }
         }
     }
+    //4 배열을 요소로 하는 n차원 벡터 생성
     VectorImpl(Scalar[] arr) {
         elements = new ArrayList<>();
         for (int i = 0; i < arr.length; i++) {
@@ -38,7 +41,7 @@ class VectorImpl implements Vector {
             }
         }
     }
-
+    //11 지정조회
     @Override
     public Scalar getValue(int index) {
         if (index < 0 || index >= elements.size()) {
@@ -47,6 +50,7 @@ class VectorImpl implements Vector {
         String temp = elements.get(index).getValue();
         return new ScalarImpl(temp);
     }
+    //11 지정조회
     @Override
     public void setValue(int index, Scalar val) {
         if (index < 0 || index >= elements.size()) {
@@ -55,6 +59,7 @@ class VectorImpl implements Vector {
         String temp = val.getValue();
         elements.set(index, new ScalarImpl(temp));
     }
+    //13 크기정보 조회
     @Override
     public int size() {
         int count = 0;
@@ -63,7 +68,7 @@ class VectorImpl implements Vector {
         }
         return count;
     }
-
+    //14 객체를 콘솔에 출력할 수 있다.
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -98,7 +103,7 @@ class VectorImpl implements Vector {
         }
         return true;
     }
-
+    //17 객체 복제
     @Override
     public Vector clone() {
         Scalar[] arr = new Scalar[elements.size()];
@@ -108,7 +113,7 @@ class VectorImpl implements Vector {
         }
         return new VectorImpl(arr);
     }
-
+    //20 벡터 덧셈
     @Override
     public void add(Vector other) {
         if (this.size() != other.size()) {
@@ -121,7 +126,7 @@ class VectorImpl implements Vector {
             this.setValue(i, sum);
         }
     }
-
+    //21 벡터 - 스칼라 곱셈셈
     @Override
     public void multiply(Scalar scalar) {
         for (int i = 0; i < this.size(); i++) {
@@ -131,7 +136,7 @@ class VectorImpl implements Vector {
             this.setValue(i, product);
         }
     }
-
+    //30 자신으로부터 nx1행렬 반환 -> 세로행렬
     @Override
     public Matrix toVerticalMatrix() {
         int n = this.size();
@@ -142,7 +147,7 @@ class VectorImpl implements Vector {
         }
         return new MatrixImpl(arr);
     }
-
+    //31 자신으로부터 1xn행렬 반환 -> 가로행렬
     @Override
     public Matrix toHorizontalMatrix() {
         int n = this.size();
